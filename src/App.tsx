@@ -5,7 +5,9 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Universities from './pages/Universities';
 import Students from './pages/Students';
-import { Companies, Drivers, Trips, Vehicles } from './pages/Lists';
+import { Trips } from './pages/Lists';
+import { Companies, Drivers, Vehicles } from './pages/Manage';
+import Users from './pages/Users';
 import Contracts from './pages/Contracts';
 import Finance from './pages/Finance';
 
@@ -16,6 +18,7 @@ const ITEMS: Item[] = [
   { to: '/', label: 'داشبورد', roles: ALL, el: <Dashboard /> },
   { to: '/universities', label: 'دانشگاه‌ها', roles: ['super_admin'], el: <Universities /> },
   { to: '/students', label: 'دانشجویان', roles: ['super_admin', 'university_admin'], el: <Students /> },
+  { to: '/users', label: 'کاربران', roles: ['super_admin', 'university_admin'], el: <Users /> },
   { to: '/companies', label: 'شرکت‌های حمل‌ونقل', roles: UNI, el: <Companies /> },
   { to: '/contracts', label: 'قراردادها', roles: ALL, el: <Contracts /> },
   { to: '/finance', label: 'گزارش مالی', roles: ALL, el: <Finance /> },

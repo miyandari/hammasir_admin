@@ -19,3 +19,4 @@ export interface CostLine { vehicle_type: string | null; trips: number; price_pe
 export interface CostItem { contract_id: number; contract_number: string; university_id: number; transport_company_id: number; trips: number; priced_trips: number; unpriced_trips: number; total_cost: number; lines: CostLine[]; }
 export interface CostReport { summary: { trips: number; priced_trips: number; unpriced_trips: number; total_cost: number }; items: CostItem[]; }
 export const VTYPE_FA: Record<string, string> = { bus: 'اتوبوس', minibus: 'مینی‌بوس', van: 'ون', sedan: 'سواری' };
+export interface Assignment { id: number; contract_id: number; vehicle_id?: number; driver_id?: number; start_date: string | null; end_date: string | null; is_active: boolean; }

@@ -4,24 +4,53 @@ import { api, get } from '../lib/api';
 import { useAuth } from '../lib/auth';
 import { VTYPE_FA, type Contract, type Rate, type Vehicle } from '../lib/types';
 import { Err, Modal, Table, Tag } from '../components/ui';
+import FormModal, { type Field } from '../components/FormModal';
+import { useCompanies, useUniField } from '../lib/hooks';
+import ContractLinks from './ContractLinks';
 
 const money = (n: number | null) => (n == null ? '—' : n.toLocaleString('fa-IR'));
 const day = (s: string) => new Date(s).toLocaleDateString('fa-IR');
 
 export default function Contracts() {
   const { me } = useAuth();
+  const qc = useQueryClient();
   const canEdit = me?.role !== 'company_admin';
+  const uni = useUniField();
+  const companies = useCompanies();
   const q = useQuery({ queryKey: ['/contracts/'], queryFn: () => get<Contract[]>('/contracts/') });
   const [sel, setSel] = useState<Contract | null>(null);
+  const [links, setLinks] = useState<Contract | null>(null);
+  const [edit, setEdit] = useState<Contract | 'new' | null>(null);
+  const refresh = () => { void qc.invalidateQueries({ queryKey: ['/contracts/'] }); void qc.invalidateQueries({ queryKey: ['costs'] }); };
+  const status = useMutation({ mutationFn: (c: Contract) => api('PATCH', `/contracts/${c.id}/status`, { query: { is_active: !c.is_active } }), onSuccess: refresh });
+  const cName = (id: number) => companies.data?.find((c) => c.id === id)?.name ?? id;
+  const fields: Field[] = [
+    ...(uni.isSuper && edit === 'new' ? [{ name: 'university_id', label: 'دانشگاه', type: 'select' as const, options: uni.options, required: true }] : []),
+    { name: 'transport_company_id', label: 'شرکت حمل‌ونقل', type: 'select', options: (companies.data ?? []).map((c) => ({ value: c.id, label: c.name })), required: true },
+    { name: 'contract_number', label: 'شماره قرارداد', required: true, ltr: true },
+    { name: 'start_date', label: 'تاریخ شروع', type: 'date', required: true }, { name: 'end_date', label: 'تاریخ پایان', type: 'date', required: true },
+    { name: 'contract_amount', label: 'مبلغ کل قرارداد (ریال)', type: 'number', hint: 'اختیاری؛ هزینه‌ی سفرها از «نرخ‌ها» محاسبه می‌شود' },
+    { name: 'description', label: 'توضیحات' }, { name: 'is_active', label: 'فعال', type: 'checkbox' },
+  ];
   return (<>
-    <div className="top"><h1>قراردادها</h1><span className="mute">{q.data ? `${q.data.length} مورد` : ''}</span></div>
-    <Err e={q.error} />
+    <div className="top"><h1>قراردادها</h1>{canEdit && <button className="btn" onClick={() => setEdit('new')}>قرارداد جدید</button>}</div>
+    <Err e={q.error ?? status.error} />
     <Table rows={q.data ?? []} cols={[
-      { head: 'شماره', cell: (r) => <span dir="ltr">{r.contract_number}</span> }, { head: 'شرکت', cell: (r) => r.transport_company_id },
+      { head: 'شماره', cell: (r) => <span dir="ltr">{r.contract_number}</span> }, { head: 'شرکت', cell: (r) => cName(r.transport_company_id) },
       { head: 'شروع', cell: (r) => day(r.start_date) }, { head: 'پایان', cell: (r) => day(r.end_date) },
       { head: 'مبلغ کل (ریال)', cell: (r) => money(r.contract_amount) }, { head: 'وضعیت', cell: (r) => <Tag on={r.is_active} /> },
-      { head: 'نرخ سفر', cell: (r) => <button className="btn ghost" onClick={() => setSel(r)}>{canEdit ? 'نرخ‌ها' : 'مشاهده نرخ‌ها'}</button> }]} />
+      { head: '', cell: (r) => <div className="row"><button className="btn ghost" onClick={() => setSel(r)}>{canEdit ? 'نرخ‌ها' : 'مشاهده نرخ‌ها'}</button>
+        <button className="btn ghost" onClick={() => setLinks(r)}>خودرو و راننده</button>
+        {canEdit && <button className="btn ghost" onClick={() => setEdit(r)}>ویرایش</button>}
+        {canEdit && <button className="btn ghost" onClick={() => { if (confirm(r.is_active ? 'قرارداد غیرفعال شود؟' : 'قرارداد فعال شود؟')) status.mutate(r); }}>{r.is_active ? 'غیرفعال‌سازی' : 'فعال‌سازی'}</button>}</div> }]} />
+    {links && <ContractLinks contract={links} canEdit={canEdit} onClose={() => setLinks(null)} />}
     {sel && <RatesModal contract={sel} canEdit={canEdit} onClose={() => setSel(null)} />}
+    {edit && <FormModal title={edit === 'new' ? 'قرارداد جدید' : 'ویرایش قرارداد'} fields={fields} onClose={() => setEdit(null)}
+      initial={edit === 'new' ? { is_active: true, university_id: uni.myUni } : { ...edit }}
+      onSubmit={async (v) => {
+        const body = { ...v, university_id: edit === 'new' ? (v.university_id ?? uni.myUni) : edit.university_id };
+        await api(edit === 'new' ? 'POST' : 'PATCH', edit === 'new' ? '/contracts/' : `/contracts/${edit.id}`, { json: body }); refresh();
+      }} />}
   </>);
 }
 
@@ -57,3 +86,4 @@ function RatesModal({ contract, canEdit, onClose }: { contract: Contract; canEdi
     </Modal>
   );
 }
+
