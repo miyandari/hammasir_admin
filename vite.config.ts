@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react';
 // در توسعه، درخواست‌های API به بک‌اند محلی پراکسی می‌شوند (بدون مشکل CORS).
 const API = process.env.VITE_PROXY_TARGET || 'http://localhost:8000';
 const paths = ['auth','users','universities','students','student-import','drivers','vehicles','contracts','contract-vehicles','contract-drivers',
-  'transport-companies','trips','services','schedules','routes','stations','finance-reports',
+  'transport-companies','trips','schedules','route-stations','services','schedules','routes','stations','finance-reports',
   'analytics-reports','reports','contract-rates','trip-incidents','vehicle-locations','notifications'];
 
 export default defineConfig({

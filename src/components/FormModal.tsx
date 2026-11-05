@@ -24,7 +24,7 @@ export default function FormModal({ title, fields, initial, submitLabel = 'ثب�
     const out: Values = {};
     for (const f of fields) {
       const raw = v[f.name];
-      if (f.type === 'number') out[f.name] = raw === '' || raw == null ? null : Number(latin(String(raw)).replace(/[,٬،\s]/g, ''));
+      if (f.type === 'number') { const n = raw === '' || raw == null ? NaN : Number(latin(String(raw)).replace(/[,٬،\s]/g, '').replace('٫', '.')); out[f.name] = Number.isFinite(n) ? n : null; }
       else if (f.type === 'select') out[f.name] = raw === '' || raw == null ? null : (typeof f.options?.[0]?.value === 'number' ? Number(raw) : String(raw));
       else if (f.type === 'checkbox') out[f.name] = !!raw;
       else { const s = latin(String(raw ?? '')).trim(); out[f.name] = f.type === 'password' ? String(raw ?? '') : s === '' ? null : s; }

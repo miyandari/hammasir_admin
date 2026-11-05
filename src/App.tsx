@@ -5,7 +5,9 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Universities from './pages/Universities';
 import Students from './pages/Students';
-import { Trips } from './pages/Lists';
+import Trips from './pages/Trips';
+import Network from './pages/Network';
+import Services from './pages/Services';
 import { Companies, Drivers, Vehicles } from './pages/Manage';
 import Users from './pages/Users';
 import Contracts from './pages/Contracts';
@@ -24,6 +26,8 @@ const ITEMS: Item[] = [
   { to: '/finance', label: 'گزارش مالی', roles: ALL, el: <Finance /> },
   { to: '/vehicles', label: 'خودروها', roles: ALL, el: <Vehicles /> },
   { to: '/drivers', label: 'رانندگان', roles: ALL, el: <Drivers /> },
+  { to: '/network', label: 'مسیرها و ایستگاه‌ها', roles: ['super_admin', 'university_admin', 'transport_manager'], el: <Network /> },
+  { to: '/services', label: 'سرویس‌ها', roles: ALL, el: <Services /> },
   { to: '/trips', label: 'سفرها', roles: ALL, el: <Trips /> },
 ];
 
