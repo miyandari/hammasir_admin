@@ -14,3 +14,8 @@ export const ROLE_FA: Record<Role, string> = {
 export const TRIP_STATUS_FA: Record<string, string> = {
   scheduled: 'برنامه‌ریزی‌شده', boarding: 'در حال سوار شدن', in_progress: 'در حال انجام', completed: 'انجام‌شده', cancelled: 'لغوشده',
 };
+export interface Rate { id: number; contract_id: number; vehicle_type: string; price_per_trip: number; }
+export interface CostLine { vehicle_type: string | null; trips: number; price_per_trip: number | null; amount: number | null; }
+export interface CostItem { contract_id: number; contract_number: string; university_id: number; transport_company_id: number; trips: number; priced_trips: number; unpriced_trips: number; total_cost: number; lines: CostLine[]; }
+export interface CostReport { summary: { trips: number; priced_trips: number; unpriced_trips: number; total_cost: number }; items: CostItem[]; }
+export const VTYPE_FA: Record<string, string> = { bus: 'اتوبوس', minibus: 'مینی‌بوس', van: 'ون', sedan: 'سواری' };

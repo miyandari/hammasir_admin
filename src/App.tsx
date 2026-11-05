@@ -5,7 +5,9 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Universities from './pages/Universities';
 import Students from './pages/Students';
-import { Companies, Contracts, Drivers, Trips, Vehicles } from './pages/Lists';
+import { Companies, Drivers, Trips, Vehicles } from './pages/Lists';
+import Contracts from './pages/Contracts';
+import Finance from './pages/Finance';
 
 interface Item { to: string; label: string; roles: Role[]; el: JSX.Element; }
 const ALL: Role[] = ['super_admin', 'university_admin', 'transport_manager', 'company_admin'];
@@ -16,6 +18,7 @@ const ITEMS: Item[] = [
   { to: '/students', label: 'دانشجویان', roles: ['super_admin', 'university_admin'], el: <Students /> },
   { to: '/companies', label: 'شرکت‌های حمل‌ونقل', roles: UNI, el: <Companies /> },
   { to: '/contracts', label: 'قراردادها', roles: ALL, el: <Contracts /> },
+  { to: '/finance', label: 'گزارش مالی', roles: ALL, el: <Finance /> },
   { to: '/vehicles', label: 'خودروها', roles: ALL, el: <Vehicles /> },
   { to: '/drivers', label: 'رانندگان', roles: ALL, el: <Drivers /> },
   { to: '/trips', label: 'سفرها', roles: ALL, el: <Trips /> },

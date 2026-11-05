@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { get } from '../lib/api';
-import { TRIP_STATUS_FA, type Company, type Contract, type Driver, type Trip, type Vehicle } from '../lib/types';
+import { TRIP_STATUS_FA, type Company, type Driver, type Trip, type Vehicle } from '../lib/types';
 import { Err, Table, Tag, type Col } from '../components/ui';
 
 function List<T>({ title, path, query, cols }: { title: string; path: string; query?: Record<string, string | number>; cols: Col<T>[] }) {
@@ -11,18 +11,12 @@ function List<T>({ title, path, query, cols }: { title: string; path: string; qu
     <Table rows={q.data ?? []} cols={cols} />
   </>);
 }
-const money = (n: number | null) => (n == null ? '—' : n.toLocaleString('fa-IR'));
 const day = (s: string) => new Date(s).toLocaleDateString('fa-IR');
 const hm = (s: string | null) => (s ? new Date(s).toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' }) : '—');
 
 export const Companies = () => <List<Company> title="شرکت‌های حمل‌ونقل" path="/transport-companies/" cols={[
   { head: 'نام', cell: (r) => r.name }, { head: 'شماره ثبت', cell: (r) => r.registration_number ?? '—' },
   { head: 'تلفن', cell: (r) => <span dir="ltr">{r.phone ?? '—'}</span> }, { head: 'وضعیت', cell: (r) => <Tag on={r.is_active} /> }]} />;
-
-export const Contracts = () => <List<Contract> title="قراردادها" path="/contracts/" cols={[
-  { head: 'شماره', cell: (r) => <span dir="ltr">{r.contract_number}</span> }, { head: 'شرکت', cell: (r) => r.transport_company_id },
-  { head: 'شروع', cell: (r) => day(r.start_date) }, { head: 'پایان', cell: (r) => day(r.end_date) },
-  { head: 'مبلغ (ریال)', cell: (r) => money(r.contract_amount) }, { head: 'وضعیت', cell: (r) => <Tag on={r.is_active} /> }]} />;
 
 export const Vehicles = () => <List<Vehicle> title="خودروها" path="/vehicles/" cols={[
   { head: 'پلاک', cell: (r) => <span dir="ltr">{r.plate_number}</span> }, { head: 'نوع', cell: (r) => r.vehicle_type },
