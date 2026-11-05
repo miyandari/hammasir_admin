@@ -30,3 +30,11 @@ export const DAYS_FA = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شن
 export const DIR_FA: Record<string, string> = { outbound: 'رفت (به دانشگاه)', inbound: 'برگشت (از دانشگاه)' };
 export const GENDER_FA: Record<string, string> = { mixed: 'مختلط', male: 'آقایان', female: 'بانوان' };
 export const STYPE_FA: Record<string, string> = { regular: 'عادی', extra: 'فوق‌العاده' };
+export interface Loc { id: number; trip_id: number; vehicle_id: number; latitude: number; longitude: number; speed: number | null; heading: number | null; recorded_at: string; }
+export interface Incident { id: number; trip_id: number; reported_by_driver_id: number | null; incident_type: string; description: string | null; occurred_at: string; resolved_at: string | null; is_resolved: boolean; }
+export const BREAKDOWN_FA: Record<string, string> = { engine: 'موتور', tire: 'لاستیک', electrical: 'برقی', fuel: 'سوخت', accident: 'تصادف', other: 'سایر' };
+/** incident_type مثل vehicle_breakdown:engine را به متن فارسی تبدیل می‌کند */
+export function incidentLabel(t: string): string {
+  if (t.startsWith('vehicle_breakdown')) { const k = t.split(':')[1]; return `خرابی خودرو${k ? ` — ${BREAKDOWN_FA[k] ?? k}` : ''}`; }
+  return t;
+}
