@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from './lib/auth';
 import { ROLE_FA, type Role } from './lib/types';
@@ -37,18 +38,21 @@ const ITEMS: Item[] = [
 
 export default function App() {
   const { me, loading, logout } = useAuth();
+  const [open, setOpen] = useState(false);
   if (loading) return <div className="login mute">در حال بارگذاری…</div>;
   if (!me) return <Login />;
   const items = ITEMS.filter((i) => i.roles.includes(me.role));
   return (
     <div className="shell">
-      <aside className="side">
-        <div className="brand">هم‌مسیر</div>
+      <aside className={`side${open ? ' open' : ''}`}>
+        <div className="brand"><span>هم‌مسیر</span><button className="btn ghost menubtn" aria-expanded={open} onClick={() => setOpen(!open)}>{open ? 'بستن' : 'منو'}</button></div>
+        <div className="sidebody" onClick={() => setOpen(false)}>
         <nav className="nav">{items.map((i) => <NavLink key={i.to} to={i.to} end={i.to === '/'}>{i.label}</NavLink>)}</nav>
         <div style={{ marginTop: 24, padding: '0 10px' }}>
           <div>{[me.first_name, me.last_name].filter(Boolean).join(' ') || me.username}</div>
           <div className="mute" style={{ fontSize: 12, marginBottom: 8 }}>{ROLE_FA[me.role]}</div>
           <button className="btn ghost" onClick={logout}>خروج</button>
+        </div>
         </div>
       </aside>
       <main className="main">

@@ -38,9 +38,9 @@ export default function MapPicker({ lat, lng, others = [], onPick, onClose }: {
   }, []);
 
   return (
-    <Modal title="انتخاب موقعیت روی نقشه" onClose={onClose}>
-      <div style={{ width: 'min(86vw, 720px)' }}>
-        <div ref={el} style={{ height: 'min(60vh, 460px)', borderRadius: 8, overflow: 'hidden', border: '1px solid var(--line)' }} />
+    <Modal title="انتخاب موقعیت روی نقشه" onClose={onClose} wide>
+      <div>
+        <div ref={el} style={{ height: 'clamp(220px, calc(100dvh - 250px), 460px)', borderRadius: 8, overflow: 'hidden', border: '1px solid var(--line)' }} />
         <div className="row" style={{ marginTop: 10, justifyContent: 'space-between' }}>
           <span className="mute" dir="ltr">{pt ? `${pt[0].toFixed(6)}, ${pt[1].toFixed(6)}` : 'روی نقشه کلیک کنید'}</span>
           <span className="mute" style={{ fontSize: 12 }}>{base === 'offline' ? 'نقشه‌ی آفلاین' : base === 'osm' ? 'نقشه‌ی آنلاین' : ''}</span>
