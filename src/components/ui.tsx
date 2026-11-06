@@ -1,6 +1,16 @@
 import { useEffect, useState, type ReactNode } from 'react';
 
 const PAGE = 100;
+const n = (x: number) => x.toLocaleString('fa-IR');
+
+/** شماره‌ی صفحه‌ها (۰-پایه)؛ null = «…». همیشه اول، آخر و همسایه‌های صفحه‌ی فعلی */
+function pageList(cur: number, total: number): (number | null)[] {
+  const keep = new Set([0, total - 1, cur - 1, cur, cur + 1]);
+  if (total <= 9) return Array.from({ length: total }, (_, i) => i);
+  const out: (number | null)[] = []; let last = -1;
+  for (const i of [...keep].filter((x) => x >= 0 && x < total).sort((a, b) => a - b)) { if (i - last > 1) out.push(null); out.push(i); last = i; }
+  return out;
+}
 
 export const Err = ({ e }: { e: unknown }) => (e ? <div className="err">{e instanceof Error ? e.message : String(e)}</div> : null);
 export const Tag = ({ on, yes = 'فعال', no = 'غیرفعال' }: { on: boolean; yes?: string; no?: string }) => <span className={`tag ${on ? 'ok' : 'bad'}`}>{on ? yes : no}</span>;
@@ -33,9 +43,14 @@ export function Table<T>({ rows, cols, empty = 'موردی یافت نشد' }: {
       </div>
       {pages > 1 && (
         <div className="row pager">
-          <button className="btn ghost" disabled={cur === 0} onClick={() => setPage(cur - 1)}>قبلی</button>
-          <span className="mute">صفحه {cur + 1} از {pages} · ردیف {from + 1} تا {from + shown.length} از {rows.length}</span>
-          <button className="btn ghost" disabled={cur >= pages - 1} onClick={() => setPage(cur + 1)}>بعدی</button>
+          <span className="info">ردیف {n(from + 1)} تا {n(from + shown.length)} از {n(rows.length)}</span>
+          <nav className="pn" aria-label="صفحه‌بندی">
+            <button disabled={cur === 0} onClick={() => setPage(cur - 1)} aria-label="صفحه‌ی قبل">‹</button>
+            {pageList(cur, pages).map((x, i) => x === null
+              ? <span key={`g${i}`} className="gap">…</span>
+              : <button key={x} className={x === cur ? 'cur' : ''} aria-current={x === cur ? 'page' : undefined} onClick={() => setPage(x)}>{n(x + 1)}</button>)}
+            <button disabled={cur >= pages - 1} onClick={() => setPage(cur + 1)} aria-label="صفحه‌ی بعد">›</button>
+          </nav>
         </div>
       )}
     </>

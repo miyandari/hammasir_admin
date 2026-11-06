@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from 'react';
 import { useAuth } from '../lib/auth';
 import { Err } from '../components/ui';
+import Icon from '../components/Icon';
+import { BRAND_NAME, BRAND_SLOGAN } from '../lib/brand';
 
 export default function Login() {
   const { login } = useAuth();
@@ -12,8 +14,12 @@ export default function Login() {
   }
   return (
     <div className="login"><form className="card" onSubmit={submit}>
-      <h1 style={{ marginBottom: 4 }}>هم‌مسیر</h1>
-      <p className="mute" style={{ marginTop: 0 }}>ورود به پنل مدیریت</p>
+      <div className="brandhead">
+        <div className="logo"><Icon name="bus" size={28} /></div>
+        <h1>{BRAND_NAME}</h1>
+        <p className="slogan">{BRAND_SLOGAN}</p>
+      </div>
+      <p className="mute" style={{ marginTop: 0, textAlign: 'center' }}>ورود به پنل مدیریت</p>
       <Err e={err} />
       <label>نام کاربری<input value={u} onChange={(e) => setU(e.target.value)} autoComplete="username" dir="ltr" required /></label>
       <label>رمز عبور<input type="password" value={p} onChange={(e) => setP(e.target.value)} autoComplete="current-password" dir="ltr" required /></label>

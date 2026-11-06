@@ -5,9 +5,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Vazirmatn',syst
 a{color:var(--brand);text-decoration:none}
 .shell{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
 .side{background:var(--card);border-inline-end:1px solid var(--line);padding:16px 12px;position:sticky;top:0;height:100vh;overflow:auto}
-.brand{font-weight:700;font-size:18px;color:var(--brand);padding:4px 10px 16px;display:flex;justify-content:space-between;align-items:center}
-.menubtn{display:none;padding:5px 12px}
-.nav a{display:block;padding:9px 12px;border-radius:8px;color:var(--ink);margin-bottom:2px}
+.nav a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;color:var(--ink);margin-bottom:2px;transition:background .15s}
+.nav a .ico{color:var(--mute);flex:none}.nav a.active .ico{color:var(--brand)}
 .nav a:hover{background:var(--bg)}.nav a.active{background:var(--brand-l);color:var(--brand-d);font-weight:600}
 .main{padding:24px;max-width:1200px;width:100%;min-width:0}
 .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:12px;flex-wrap:wrap}
@@ -38,8 +37,70 @@ th{color:var(--mute);font-weight:500;font-size:12px}
 .mhead{flex:none;margin-bottom:12px}
 .mbody{overflow:auto;min-height:0;flex:1}
 .mbody form>button.btn:last-child,.sticky-foot{position:sticky;bottom:0}
-.pager{justify-content:center;margin:12px 0;gap:12px}
-.pager span{font-size:12px;text-align:center}
-@media(max-width:800px){.shell{grid-template-columns:1fr}.side{position:sticky;top:0;z-index:5;height:auto;padding:8px 12px;border-inline-end:0;border-bottom:1px solid var(--line)}.brand{padding:2px 4px}.menubtn{display:inline-block}.sidebody{display:none;max-height:75vh;overflow:auto;padding-top:8px}.side.open .sidebody{display:block}.nav{display:flex;flex-wrap:wrap;gap:4px}.main{padding:14px}.card{padding:12px}.top{margin-bottom:12px}.modal{padding:8px}.btn{padding:9px 12px}}
+@media(max-width:800px){.shell{grid-template-columns:1fr}.side{position:sticky;top:0;z-index:5;height:auto;padding:8px 12px;border-inline-end:0;border-bottom:1px solid var(--line)}.sidebody{display:none;max-height:75vh;overflow:auto;padding-top:8px}.side.open .sidebody{display:block}.nav{display:flex;flex-wrap:wrap;gap:4px}.main{padding:14px}.card{padding:12px}.top{margin-bottom:12px}.modal{padding:8px}.btn{padding:9px 12px}}
 @media(max-width:900px){.mapgrid{grid-template-columns:1fr!important}}
 .leaflet-container{font-family:inherit}
+
+/* برند، نوار بالا، کاربر */
+.ico{flex:none}
+.brand{display:flex;align-items:center;gap:10px;padding:4px 8px 18px}
+.logo{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand-d));color:#fff;flex:none}
+.bname{font-weight:700;font-size:18px;color:var(--brand)}
+.content{min-width:0;display:flex;flex-direction:column}
+.topbar{display:flex;justify-content:flex-end;align-items:center;padding:10px 24px;background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:4}
+.userbar{display:flex;align-items:center;gap:10px}
+.avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--brand-l);color:var(--brand-d);font-weight:700}
+.uinfo{display:flex;flex-direction:column;line-height:1.35}.uinfo small{color:var(--mute);font-size:12px}
+.iconbtn{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+.iconbtn:hover{background:var(--bad-l);color:var(--bad);border-color:transparent}
+.menubtn{display:none}.menubtn:hover{background:var(--bg);color:var(--ink)}
+.userbar.compact{display:none;margin-inline-start:auto}
+/* جدول */
+th{background:var(--bg);position:sticky;top:0}
+tbody tr:hover td{background:var(--brand-l)}
+tbody tr:last-child td{border-bottom:0}
+.tw{border-radius:12px}
+/* صفحه‌بندی */
+.pager{justify-content:space-between;margin:12px 0;gap:8px}
+.pager .pn{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.pager .pn button{min-width:34px;height:34px;padding:0 8px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;font:inherit;cursor:pointer}
+.pager .pn button:hover{background:var(--bg)}
+.pager .pn button.cur{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:700}
+.pager .pn button:disabled{opacity:.4;cursor:default}
+.pager .pn .gap{align-self:center;color:var(--mute);padding:0 2px}
+.pager .info{color:var(--mute);font-size:12px}
+/* صفحه‌ی اول: بنر و ورود */
+.hero{display:flex;align-items:center;gap:16px;padding:20px;border-radius:14px;margin-bottom:20px;color:#fff;background:linear-gradient(120deg,#0f766e,#14b8a6)}
+.hero .logo{width:54px;height:54px;border-radius:14px;background:rgba(255,255,255,.2)}
+.hero h2{margin:0;font-size:19px}.hero p{margin:2px 0 0;opacity:.92}
+.login .brandhead{text-align:center;margin-bottom:14px}
+.login .brandhead .logo{width:56px;height:56px;border-radius:16px;margin:0 auto 10px}
+.login .brandhead h1{font-size:24px;color:var(--brand)}
+.login .slogan{margin:4px 0 0;color:var(--mute)}
+/* جستجوی مکان در نقشه */
+.psearch{position:relative;margin-bottom:8px}
+.psearch .row{flex-wrap:nowrap}
+.psearch ul{list-style:none;margin:6px 0 0;padding:4px;border:1px solid var(--line);border-radius:10px;background:var(--card);max-height:200px;overflow:auto}
+.psearch li button{display:block;width:100%;text-align:start;background:none;border:0;color:var(--ink);font:inherit;padding:7px 10px;border-radius:8px;cursor:pointer}
+.psearch li button:hover{background:var(--bg)}
+.psearch li small{color:var(--mute);margin-inline-start:6px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:var(--card);color:var(--ink);font:inherit;padding:5px 12px;cursor:pointer}
+.seg button.on{background:var(--brand);color:#fff}
+.seg button:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:800px){
+  .topbar{display:none}
+  .userbar.compact{display:flex}.userbar.compact .uinfo{display:none}
+  .brand{padding:2px 4px}.menubtn{display:inline-grid}
+}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--card)}
+.seg button{border:0;background:transparent;color:var(--ink);font:inherit;padding:5px 12px;cursor:pointer}
+.seg button.on{background:var(--brand);color:#fff}
+.seg button:disabled{opacity:.45;cursor:not-allowed}
+.psearch{position:relative;flex:1;min-width:200px}
+.psrow{display:flex;gap:6px}.psrow input{flex:1}.psrow .btn{padding:6px 12px;display:grid;place-items:center}
+.psnote{font-size:12px;margin-top:4px}
+.pslist{position:absolute;inset-inline:0;top:100%;z-index:1000;margin:4px 0 0;padding:4px;list-style:none;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);max-height:260px;overflow:auto}
+.pslist button{display:flex;flex-direction:column;align-items:flex-start;gap:0;width:100%;text-align:start;background:transparent;border:0;color:var(--ink);font:inherit;padding:7px 10px;border-radius:8px;cursor:pointer}
+.pslist button:hover{background:var(--bg)}.pslist small{font-size:11px}
+.maptools{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;margin-bottom:10px}

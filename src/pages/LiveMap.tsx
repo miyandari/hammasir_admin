@@ -6,7 +6,9 @@ import { ApiError, get } from '../lib/api';
 import { useDrivers } from '../lib/hooks';
 import { type Loc, type ServiceT, type Station, type Trip, type Vehicle, TRIP_STATUS_FA } from '../lib/types';
 import { Err } from '../components/ui';
-import { addBaseLayer, type BaseKind } from '../lib/basemap';
+import { useBase } from '../lib/basemap';
+import BaseSwitch from '../components/BaseSwitch';
+import PlaceSearch from '../components/PlaceSearch';
 
 const ZANJAN: [number, number] = [36.68, 48.49];
 const STALE_MS = 2 * 60 * 1000;
@@ -29,7 +31,7 @@ export default function LiveMap() {
   const stLayer = useRef<L.LayerGroup | null>(null);
   const fitted = useRef(false);
   const [focus, setFocus] = useState<number | null>(null);
-  const [base, setBase] = useState<BaseKind | null>(null);
+  const base = useBase();
   const drivers = useDrivers();
   const services = useQuery({ queryKey: ['/services/'], queryFn: () => get<ServiceT[]>('/services/') });
   const vehicles = useQuery({ queryKey: ['/vehicles/'], queryFn: () => get<Vehicle[]>('/vehicles/') });
@@ -49,7 +51,7 @@ export default function LiveMap() {
   useEffect(() => {
     if (!el.current || map.current) return;
     const m = L.map(el.current, { center: ZANJAN, zoom: 13 });
-    void addBaseLayer(m, () => map.current === m).then((k) => { if (k) setBase(k); });
+    void base.attach(m, () => map.current === m);
     layer.current = L.layerGroup().addTo(m); stLayer.current = L.layerGroup().addTo(m);
     map.current = m;
     return () => { m.remove(); map.current = null; };
@@ -94,7 +96,12 @@ export default function LiveMap() {
 
   return (<>
     <div className="top"><h1>نقشه‌ی زنده</h1>
-      <span className="mute">{live.isFetching ? 'در حال به‌روزرسانی…' : `${located.length.toLocaleString('fa-IR')} خودرو روی نقشه — هر ۱۰ ثانیه تازه می‌شود`}{base === 'offline' ? ' · نقشه‌ی آفلاین' : base === 'osm' ? ' · نقشه‌ی آنلاین' : ''}</span></div>
+      <span className="mute">{live.isFetching ? 'در حال به‌روزرسانی…' : `${located.length.toLocaleString('fa-IR')} خودرو روی نقشه — هر ۱۰ ثانیه تازه می‌شود`}</span></div>
+    <div className="maptools">
+      <PlaceSearch local={(stations.data ?? []).filter((s) => s.latitude != null && s.longitude != null).map((s) => ({ name: s.name, lat: s.latitude as number, lng: s.longitude as number }))}
+        onSelect={(pl) => map.current?.setView([pl.lat, pl.lng], 17)} />
+      <BaseSwitch mode={base.mode} offlineOk={base.offlineOk} onChange={base.choose} />
+    </div>
     <Err e={live.error} />
     <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 300px', gap: 12 }} className="mapgrid">
       <div className="card" style={{ padding: 0, overflow: 'hidden' }}><div ref={el} style={{ height: 'calc(100vh - 170px)', minHeight: 420 }} /></div>

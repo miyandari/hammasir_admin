@@ -3,6 +3,8 @@ import { get } from '../lib/api';
 import { useAuth } from '../lib/auth';
 import type { Contract, Driver, Student, Trip, Vehicle } from '../lib/types';
 import { Err } from '../components/ui';
+import Icon from '../components/Icon';
+import { BRAND_NAME, BRAND_SLOGAN } from '../lib/brand';
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -28,6 +30,10 @@ export default function Dashboard() {
   const d = q.data;
   const S = ({ n, l }: { n: number | null | undefined; l: string }) => <div className="card stat"><b>{n ?? '—'}</b><span>{l}</span></div>;
   return (<>
+    <div className="hero">
+      <div className="logo"><Icon name="bus" size={30} /></div>
+      <div><h2>{BRAND_NAME}</h2><p>{BRAND_SLOGAN}</p></div>
+    </div>
     <div className="top"><h1>داشبورد</h1></div>
     <Err e={q.error} />
     <h3 className="mute" style={{ fontWeight: 500 }}>سفرهای امروز</h3>
