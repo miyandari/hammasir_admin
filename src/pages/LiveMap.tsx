@@ -6,8 +6,8 @@ import { ApiError, get } from '../lib/api';
 import { useDrivers } from '../lib/hooks';
 import { type Loc, type ServiceT, type Station, type Trip, type Vehicle, TRIP_STATUS_FA } from '../lib/types';
 import { Err } from '../components/ui';
+import { addBaseLayer, type BaseKind } from '../lib/basemap';
 
-const TILE = (import.meta.env.VITE_TILE_URL as string | undefined) ?? 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 const ZANJAN: [number, number] = [36.68, 48.49];
 const STALE_MS = 2 * 60 * 1000;
 const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
@@ -29,6 +29,7 @@ export default function LiveMap() {
   const stLayer = useRef<L.LayerGroup | null>(null);
   const fitted = useRef(false);
   const [focus, setFocus] = useState<number | null>(null);
+  const [base, setBase] = useState<BaseKind | null>(null);
   const drivers = useDrivers();
   const services = useQuery({ queryKey: ['/services/'], queryFn: () => get<ServiceT[]>('/services/') });
   const vehicles = useQuery({ queryKey: ['/vehicles/'], queryFn: () => get<Vehicle[]>('/vehicles/') });
@@ -48,7 +49,7 @@ export default function LiveMap() {
   useEffect(() => {
     if (!el.current || map.current) return;
     const m = L.map(el.current, { center: ZANJAN, zoom: 13 });
-    L.tileLayer(TILE, { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(m);
+    void addBaseLayer(m, () => map.current === m).then((k) => { if (k) setBase(k); });
     layer.current = L.layerGroup().addTo(m); stLayer.current = L.layerGroup().addTo(m);
     map.current = m;
     return () => { m.remove(); map.current = null; };
@@ -93,7 +94,7 @@ export default function LiveMap() {
 
   return (<>
     <div className="top"><h1>نقشه‌ی زنده</h1>
-      <span className="mute">{live.isFetching ? 'در حال به‌روزرسانی…' : `${located.length.toLocaleString('fa-IR')} خودرو روی نقشه — هر ۱۰ ثانیه تازه می‌شود`}</span></div>
+      <span className="mute">{live.isFetching ? 'در حال به‌روزرسانی…' : `${located.length.toLocaleString('fa-IR')} خودرو روی نقشه — هر ۱۰ ثانیه تازه می‌شود`}{base === 'offline' ? ' · نقشه‌ی آفلاین' : base === 'osm' ? ' · نقشه‌ی آنلاین' : ''}</span></div>
     <Err e={live.error} />
     <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 300px', gap: 12 }} className="mapgrid">
       <div className="card" style={{ padding: 0, overflow: 'hidden' }}><div ref={el} style={{ height: 'calc(100vh - 170px)', minHeight: 420 }} /></div>
@@ -112,7 +113,7 @@ export default function LiveMap() {
               </div>
             </div>);
         })}
-        <p className="mute" style={{ fontSize: 12, marginTop: 12 }}>نقطه‌های خاکستری ایستگاه‌ها هستند. اگر پس‌زمینه‌ی نقشه خالی است، دسترسی به سرور نقشه (OpenStreetMap) قطع است؛ فهرست کنار صفحه همچنان درست کار می‌کند.</p>
+        <p className="mute" style={{ fontSize: 12, marginTop: 12 }}>نقطه‌های خاکستری ایستگاه‌ها هستند. اگر پس‌زمینه‌ی نقشه خالی است، فایل نقشه‌ی آفلاین (tiles/zanjan.pmtiles) نیست و دسترسی به OpenStreetMap هم قطع است؛ فهرست کنار صفحه همچنان درست کار می‌کند.</p>
       </div>
     </div>
   </>);
