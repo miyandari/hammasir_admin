@@ -24,8 +24,7 @@ function Stations() {
   const fields: Field[] = [
     ...(uni.isSuper && edit === 'new' ? [{ name: 'university_id', label: 'دانشگاه', type: 'select' as const, options: uni.options, required: true }] : []),
     { name: 'name', label: 'نام ایستگاه', required: true }, { name: 'address', label: 'نشانی' },
-    { name: 'latitude', label: 'عرض جغرافیایی (lat)', type: 'number', hint: 'مثلاً ۳۶٫۶۸۰۰ — برای زنجان حدود ۳۶٫۶۷' },
-    { name: 'longitude', label: 'طول جغرافیایی (lng)', type: 'number', hint: 'مثلاً ۴۸٫۴۸۰۰ — برای زنجان حدود ۴۸٫۴۸' },
+    { name: 'latlng', label: 'عرض (lat)', type: 'latlng', hint: 'می‌توانید دستی بنویسید یا «انتخاب روی نقشه» را بزنید' },
     { name: 'is_active', label: 'فعال', type: 'checkbox' },
   ];
   return (<>
@@ -36,7 +35,7 @@ function Stations() {
       { head: 'مختصات', cell: (r) => (r.latitude != null && r.longitude != null ? <span dir="ltr">{r.latitude.toFixed(5)}, {r.longitude.toFixed(5)}</span> : <span className="tag warn">ندارد</span>) },
       { head: 'وضعیت', cell: (r) => <Tag on={r.is_active} /> }, { head: '', cell: (r) => <button className="btn ghost" onClick={() => setEdit(r)}>ویرایش</button> }]} />
     <p className="mute">بدون مختصات، ایستگاه روی نقشه و در «ایستگاه نزدیک» اپ دانشجو دیده نمی‌شود.</p>
-    {edit && <FormModal title={edit === 'new' ? 'ایستگاه جدید' : 'ویرایش ایستگاه'} fields={fields} onClose={() => setEdit(null)}
+    {edit && <FormModal title={edit === 'new' ? 'ایستگاه جدید' : 'ویرایش ایستگاه'} fields={fields} mapOthers={(q.data ?? []).filter((s) => s.latitude != null && s.longitude != null && (edit === 'new' || s.id !== edit.id)).map((s) => ({ name: s.name, lat: s.latitude!, lng: s.longitude! }))} onClose={() => setEdit(null)}
       initial={edit === 'new' ? { is_active: true, university_id: uni.myUni } : { ...edit }}
       onSubmit={async (v) => {
         const body = { ...v, university_id: edit === 'new' ? (v.university_id ?? uni.myUni) : edit.university_id };
