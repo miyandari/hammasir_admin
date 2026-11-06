@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react';
 const API = process.env.VITE_PROXY_TARGET || 'http://localhost:8000';
 const paths = ['auth','users','universities','students','student-import','drivers','vehicles','contracts','contract-vehicles','contract-drivers',
   'transport-companies','trips','vehicle-locations','schedules','route-stations','services','schedules','routes','stations','finance-reports',
-  'analytics-reports','reports','contract-rates','trip-incidents','vehicle-locations','notifications'];
+  'analytics-reports','reports','contract-rates','trip-incidents','vehicle-locations','notifications','backup'];
 
 export default defineConfig({
   plugins: [react()],

@@ -1,5 +1,5 @@
 export type Role = 'super_admin' | 'university_admin' | 'transport_manager' | 'company_admin' | 'driver' | 'student';
-export interface Me { id: number; username: string; role: Role; university_id: number | null; transport_company_id: number | null; first_name: string | null; last_name: string | null; }
+export interface Me { id: number; username: string; role: Role; university_id: number | null; transport_company_id: number | null; first_name: string | null; last_name: string | null; phone?: string | null; }
 export interface University { id: number; name: string; code: string; is_active: boolean; }
 export interface Student { id: number; university_id: number; student_number: string; first_name: string; last_name: string; gender: string; national_id: string | null; phone: string | null; is_active: boolean; }
 export interface Company { id: number; name: string; registration_number: string | null; phone: string | null; address: string | null; is_active: boolean; }

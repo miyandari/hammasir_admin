@@ -19,6 +19,7 @@ import Users from './pages/Users';
 import Contracts from './pages/Contracts';
 import Finance from './pages/Finance';
 import TripReport from './pages/TripReport';
+import Settings from './pages/Settings';
 
 interface Item { to: string; label: string; icon: IconName; roles: Role[]; el: JSX.Element; }
 const ALL: Role[] = ['super_admin', 'university_admin', 'transport_manager', 'company_admin'];
@@ -64,6 +65,7 @@ export default function App() {
         <main className="main">
         <Routes>
           {items.map((i) => <Route key={i.to} path={i.to} element={i.el} />)}
+          <Route path="/settings/:tab?" element={<Settings />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

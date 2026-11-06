@@ -90,6 +90,7 @@ tbody tr:last-child td{border-bottom:0}
 .seg button:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:800px){
   .topbar{display:none}
+  .side{overflow:visible}
   .userbar.compact{display:flex}.userbar.compact .uinfo{display:none}
   .brand{padding:2px 4px}.menubtn{display:inline-grid}
 }
@@ -112,3 +113,21 @@ tbody tr:last-child td{border-bottom:0}
 .alertcard:hover{border-color:var(--brand)}
 .alertcard.warn{border-color:var(--warn);background:var(--warn-l)}
 .alertcard.warn b{color:var(--warn)}
+.setmenu{position:relative}
+.iconbtn.plain:hover{background:var(--brand-l);color:var(--brand-d)}
+.dropdown{position:absolute;top:calc(100% + 8px);left:0;min-width:250px;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.18);padding:6px;z-index:50}
+.dhead{padding:6px 10px;font-size:12px;color:var(--mute)}
+.ditem{display:flex;align-items:center;gap:10px;width:100%;text-align:start;background:transparent;border:0;color:var(--ink);font:inherit;padding:9px 10px;border-radius:8px;cursor:pointer}
+.ditem:hover,.ditem:focus-visible{background:var(--brand-l);outline:none}
+.settabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;border-bottom:1px solid var(--line);padding-bottom:10px}
+.settab{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid var(--line);background:var(--card);font-size:14px}
+.settab.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.setgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;align-items:start}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:0 0 16px}.kv dt{color:var(--mute)}.kv dd{margin:0;font-weight:500}
+.okmsg{color:var(--ok);margin:8px 0}
+.okbox{border-color:var(--ok)}
+.warnbox{display:flex;gap:8px;align-items:flex-start;background:var(--warn-l);color:var(--warn);border-radius:10px;padding:10px 12px;margin:10px 0;font-size:13px}.warnbox svg{flex:none;margin-top:2px}
+.errlist{margin:8px 0;padding-inline-start:20px;color:var(--bad);font-size:13px}
+.chk{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:14px}.chk input{margin:0}
+.aboutcard{max-width:720px}
+.contactlist{list-style:none;margin:0;padding:0;display:grid;gap:14px}.contactlist li{display:flex;align-items:center;gap:10px}.contactlist a{color:var(--brand)}

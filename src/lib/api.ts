@@ -47,6 +47,37 @@ export async function api<T>(method: string, path: string, opts: { query?: Query
   return data as T;
 }
 
+function authHeaders(): Record<string, string> { const t = tokenStore.get(); return t ? { Authorization: `Bearer ${t}` } : {}; }
+function buildUrl(path: string, query?: Query) {
+  const url = new URL(BASE + path, window.location.origin);
+  for (const [k, v] of Object.entries(query ?? {})) if (v !== undefined && v !== null && v !== '') url.searchParams.set(k, String(v));
+  return url;
+}
+async function failFrom(res: Response): Promise<never> {
+  const text = await res.text(); let data: unknown = null;
+  try { data = text ? JSON.parse(text) : null; } catch { data = text; }
+  if (res.status === 401 && tokenStore.get()) { tokenStore.clear(); window.dispatchEvent(new Event('hm-unauthorized')); }
+  throw new ApiError(res.status, messageOf(data, `خطا (${res.status})`), data);
+}
+
+/** دریافت فایل (مثلاً پشتیبان) به‌صورت Blob؛ نام فایل از هدر Content-Disposition خوانده می‌شود */
+export async function download(path: string, query?: Query): Promise<{ blob: Blob; filename: string }> {
+  let res: Response;
+  try { res = await fetch(buildUrl(path, query), { headers: authHeaders() }); } catch { throw new ApiError(0, 'ارتباط با سرور برقرار نشد'); }
+  if (!res.ok) return failFrom(res);
+  const m = /filename="?([^";]+)"?/.exec(res.headers.get('Content-Disposition') ?? '');
+  return { blob: await res.blob(), filename: m?.[1] ?? 'download' };
+}
+
+/** ارسال فایل با multipart/form-data */
+export async function upload<T>(path: string, file: File, query?: Query): Promise<T> {
+  const fd = new FormData(); fd.append('file', file);
+  let res: Response;
+  try { res = await fetch(buildUrl(path, query), { method: 'POST', headers: authHeaders(), body: fd }); } catch { throw new ApiError(0, 'ارتباط با سرور برقرار نشد'); }
+  if (!res.ok) return failFrom(res);
+  return (await res.json()) as T;
+}
+
 export const get = <T,>(p: string, query?: Query) => api<T>('GET', p, { query });
 export const post = <T,>(p: string, json?: unknown, query?: Query) => api<T>('POST', p, { json, query });
 export const patch = <T,>(p: string, json?: unknown) => api<T>('PATCH', p, { json });

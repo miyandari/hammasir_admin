@@ -4,7 +4,7 @@ import type { Me, Role } from './types';
 
 const STAFF: Role[] = ['super_admin', 'university_admin', 'transport_manager', 'company_admin'];
 
-interface AuthState { me: Me | null; loading: boolean; login: (u: string, p: string) => Promise<void>; logout: () => void; }
+interface AuthState { me: Me | null; loading: boolean; login: (u: string, p: string) => Promise<void>; logout: () => void; reload: () => Promise<void>; }
 const Ctx = createContext<AuthState | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -34,7 +34,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (e) { tokenStore.clear(); throw e; }
   }, []);
 
-  return <Ctx.Provider value={{ me, loading, login, logout }}>{children}</Ctx.Provider>;
+  /** بازخوانی اطلاعات کاربر (مثلاً پس از ویرایش پروفایل) */
+  const reload = useCallback(async () => { setMe(await get<Me>('/users/me')); }, []);
+
+  return <Ctx.Provider value={{ me, loading, login, logout, reload }}>{children}</Ctx.Provider>;
 }
 
 export function useAuth() { const c = useContext(Ctx); if (!c) throw new Error('AuthProvider missing'); return c; }
