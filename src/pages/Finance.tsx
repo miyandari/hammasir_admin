@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { get } from '../lib/api';
 import { VTYPE_FA, type CostReport } from '../lib/types';
 import { Err } from '../components/ui';
-import JalaliDate, { isoToJalali, jalaliToIso, showJalali, todayIso } from '../components/JalaliDate';
+import JalaliDate, { isoToJalali, jalaliToIso, todayIso } from '../components/JalaliDate';
 
 const money = (n: number | null) => (n == null ? '—' : n.toLocaleString('fa-IR'));
 const first = () => { const j = isoToJalali(todayIso())!; return jalaliToIso(j.jy, j.jm, 1); }; // اول ماه شمسی جاری
@@ -17,7 +17,7 @@ export default function Finance() {
     const rows = [['قرارداد', 'نوع خودرو', 'سفر انجام‌شده', 'نرخ هر سفر', 'مبلغ']];
     for (const i of q.data?.items ?? []) for (const l of i.lines) rows.push([i.contract_number, VTYPE_FA[l.vehicle_type ?? ''] ?? l.vehicle_type ?? 'نامشخص', String(l.trips), String(l.price_per_trip ?? ''), String(l.amount ?? '')]);
     const blob = new Blob(['﻿' + rows.map((r) => r.map((c) => `"${c.replace(/"/g, '""')}"`).join(',')).join('\n')], { type: 'text/csv;charset=utf-8' });
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `گزارش-مالی-${showJalali(from).replace(/\//g, '-')}_${showJalali(to).replace(/\//g, '-')}.csv`; a.click(); URL.revokeObjectURL(a.href);
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `finance-report_${from}_${to}.csv`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(a.href);
   }
   return (<>
     <div className="top"><h1>گزارش مالی</h1>

@@ -38,3 +38,6 @@ export function incidentLabel(t: string): string {
   if (t.startsWith('vehicle_breakdown')) { const k = t.split(':')[1]; return `خرابی خودرو${k ? ` — ${BREAKDOWN_FA[k] ?? k}` : ''}`; }
   return t;
 }
+export interface TripSummary { total_trips: number; completed_trips: number; cancelled_trips: number; scheduled_trips: number; total_reservations: number; active_reservations: number; cancelled_reservations: number; total_boarded_passengers: number; no_show_students: number; boarding_without_reservation: number; }
+export interface RouteUsage { route_id: number; route_name: string; service_name: string; completed_trip_count: number; total_capacity: number; reservation_count: number; usage_percent: number; }
+export interface AnalyticsReport { summary: { trip_count: number; completed_trip_count: number; overall_usage_percent: number }; route_usage: RouteUsage[]; }

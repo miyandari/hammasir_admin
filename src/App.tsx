@@ -18,6 +18,7 @@ import { Companies, Drivers, Vehicles } from './pages/Manage';
 import Users from './pages/Users';
 import Contracts from './pages/Contracts';
 import Finance from './pages/Finance';
+import TripReport from './pages/TripReport';
 
 interface Item { to: string; label: string; icon: IconName; roles: Role[]; el: JSX.Element; }
 const ALL: Role[] = ['super_admin', 'university_admin', 'transport_manager', 'company_admin'];
@@ -29,6 +30,7 @@ const ITEMS: Item[] = [
   { to: '/users', icon: 'user', label: 'کاربران', roles: ['super_admin', 'university_admin'], el: <Users /> },
   { to: '/companies', icon: 'company', label: 'شرکت‌های حمل‌ونقل', roles: UNI, el: <Companies /> },
   { to: '/contracts', icon: 'contract', label: 'قراردادها', roles: ALL, el: <Contracts /> },
+  { to: '/trip-report', icon: 'chart', label: 'گزارش سفرها', roles: ALL, el: <TripReport /> },
   { to: '/finance', icon: 'finance', label: 'گزارش مالی', roles: ALL, el: <Finance /> },
   { to: '/vehicles', icon: 'bus', label: 'خودروها', roles: ALL, el: <Vehicles /> },
   { to: '/drivers', icon: 'driver', label: 'رانندگان', roles: ALL, el: <Drivers /> },
