@@ -3,13 +3,13 @@ import { useQuery } from '@tanstack/react-query';
 import { get } from '../lib/api';
 import { VTYPE_FA, type CostReport } from '../lib/types';
 import { Err } from '../components/ui';
+import JalaliDate, { isoToJalali, jalaliToIso, showJalali, todayIso } from '../components/JalaliDate';
 
 const money = (n: number | null) => (n == null ? '—' : n.toLocaleString('fa-IR'));
-const iso = (d: Date) => d.toISOString().slice(0, 10);
-const first = () => { const d = new Date(); d.setDate(1); return iso(d); };
+const first = () => { const j = isoToJalali(todayIso())!; return jalaliToIso(j.jy, j.jm, 1); }; // اول ماه شمسی جاری
 
 export default function Finance() {
-  const [from, setFrom] = useState(first()); const [to, setTo] = useState(iso(new Date()));
+  const [from, setFrom] = useState(first()); const [to, setTo] = useState(todayIso());
   const [open, setOpen] = useState<number | null>(null);
   const q = useQuery({ queryKey: ['costs', from, to], queryFn: () => get<CostReport>('/contract-rates/costs', { start_date: from, end_date: to }) });
   const s = q.data?.summary;
@@ -17,13 +17,13 @@ export default function Finance() {
     const rows = [['قرارداد', 'نوع خودرو', 'سفر انجام‌شده', 'نرخ هر سفر', 'مبلغ']];
     for (const i of q.data?.items ?? []) for (const l of i.lines) rows.push([i.contract_number, VTYPE_FA[l.vehicle_type ?? ''] ?? l.vehicle_type ?? 'نامشخص', String(l.trips), String(l.price_per_trip ?? ''), String(l.amount ?? '')]);
     const blob = new Blob(['﻿' + rows.map((r) => r.map((c) => `"${c.replace(/"/g, '""')}"`).join(',')).join('\n')], { type: 'text/csv;charset=utf-8' });
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `گزارش-مالی-${from}_${to}.csv`; a.click(); URL.revokeObjectURL(a.href);
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `گزارش-مالی-${showJalali(from).replace(/\//g, '-')}_${showJalali(to).replace(/\//g, '-')}.csv`; a.click(); URL.revokeObjectURL(a.href);
   }
   return (<>
     <div className="top"><h1>گزارش مالی</h1>
       <div className="row">
-        <label style={{ margin: 0 }}>از<input type="date" value={from} onChange={(e) => setFrom(e.target.value)} /></label>
-        <label style={{ margin: 0 }}>تا<input type="date" value={to} onChange={(e) => setTo(e.target.value)} /></label>
+        <div style={{ width: 290 }}><span className="mute" style={{ fontSize: 12 }}>از</span><JalaliDate value={from} onChange={(x) => x && setFrom(x)} /></div>
+        <div style={{ width: 290 }}><span className="mute" style={{ fontSize: 12 }}>تا</span><JalaliDate value={to} onChange={(x) => x && setTo(x)} /></div>
         <button className="btn ghost" onClick={csv} disabled={!q.data?.items.length}>خروجی CSV</button>
       </div></div>
     <Err e={q.error} />
@@ -43,6 +43,6 @@ export default function Finance() {
       </tbody></table>
       {!q.data?.items.length && <div className="mute" style={{ padding: 16 }}>در این بازه قراردادی یافت نشد.</div>}
     </div>
-    <p className="mute" style={{ marginTop: 12 }}>فقط سفرهای «انجام‌شده» محاسبه می‌شوند. تاریخ‌ها فعلاً میلادی‌اند (انتخاب‌گر شمسی در نسخه‌ی بعد).</p>
+    <p className="mute" style={{ marginTop: 12 }}>فقط سفرهای «انجام‌شده» محاسبه می‌شوند. بازه بر اساس تاریخ شمسی انتخاب می‌شود.</p>
   </>);
 }

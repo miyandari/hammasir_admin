@@ -5,13 +5,13 @@ import { useDrivers, useUniField } from '../lib/hooks';
 import { TRIP_STATUS_FA, type Driver, type ServiceT, type Trip, type Vehicle } from '../lib/types';
 import { Err, Modal, Table } from '../components/ui';
 import FormModal from '../components/FormModal';
+import JalaliDate, { todayIso } from '../components/JalaliDate';
 
-const iso = (d: Date) => d.toISOString().slice(0, 10);
 const hm = (s: string | null) => (s ? new Date(s).toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' }) : '—');
 
 export default function Trips() {
   const uni = useUniField(); const qc = useQueryClient();
-  const [date, setDate] = useState(iso(new Date()));
+  const [date, setDate] = useState(todayIso());
   const [uid, setUid] = useState<string>('');
   const q = useQuery({ queryKey: ['trips', date], queryFn: () => get<Trip[]>('/trips/', { trip_date: date }), refetchInterval: 30000 });
   const services = useQuery({ queryKey: ['/services/'], queryFn: () => get<ServiceT[]>('/services/') });
@@ -33,7 +33,7 @@ export default function Trips() {
   return (<>
     <div className="top"><h1>سفرها</h1>
       <div className="row">
-        <input type="date" value={date} onChange={(e) => { setDate(e.target.value); setMsg(null); }} style={{ width: 160 }} />
+        <div style={{ width: 290 }}><JalaliDate value={date} onChange={(x) => { if (x) { setDate(x); setMsg(null); } }} /></div>
         {uni.isSuper && <select value={uid} onChange={(e) => setUid(e.target.value)} style={{ width: 200 }}><option value="">دانشگاه…</option>{uni.options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</select>}
         <button className="btn" disabled={gen.isPending || (uni.isSuper && !uid)} onClick={() => { if (confirm('سفرهای این روز از روی برنامه‌ی هفتگی سرویس‌های فعال ساخته شود؟')) gen.mutate(); }}>تولید سفرهای این روز</button>
       </div></div>

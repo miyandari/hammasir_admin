@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Err, Modal } from './ui';
+import JalaliDate from './JalaliDate';
 
 export interface Field {
   name: string; label: string; type?: 'text' | 'number' | 'date' | 'select' | 'checkbox' | 'password' | 'tel';
@@ -20,7 +21,10 @@ export default function FormModal({ title, fields, initial, submitLabel = 'ثب�
   const set = (k: string, x: Values[string]) => setV((p) => ({ ...p, [k]: x }));
 
   async function submit(e: FormEvent) {
-    e.preventDefault(); setBusy(true); setErr(null);
+    e.preventDefault(); setErr(null);
+    const missing = fields.find((f) => f.type === 'date' && f.required && !v[f.name]);
+    if (missing) { setErr(new Error(`«${missing.label}» را انتخاب کنید`)); return; }
+    setBusy(true);
     const out: Values = {};
     for (const f of fields) {
       const raw = v[f.name];
@@ -42,14 +46,15 @@ export default function FormModal({ title, fields, initial, submitLabel = 'ثب�
           </label>
         ) : (
           <label key={f.name}>{f.label}{f.required ? ' *' : ''}
-            {f.type === 'select' ? (
+            {f.type === 'date' ? <JalaliDate value={String(v[f.name] ?? '')} onChange={(x) => set(f.name, x)} allowEmpty={!f.required} />
+            : f.type === 'select' ? (
               <select value={String(v[f.name] ?? '')} onChange={(e) => set(f.name, e.target.value)} required={f.required}>
                 <option value="">— انتخاب —</option>{f.options?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
             ) : (
               <input type={f.type === 'number' ? 'text' : f.type ?? 'text'} inputMode={f.type === 'number' ? 'numeric' : undefined}
                 value={String(v[f.name] ?? '')} onChange={(e) => set(f.name, e.target.value)} required={f.required}
-                dir={f.ltr || f.type === 'number' || f.type === 'password' || f.type === 'tel' || f.type === 'date' ? 'ltr' : undefined}
+                dir={f.ltr || f.type === 'number' || f.type === 'password' || f.type === 'tel' ? 'ltr' : undefined}
                 placeholder={f.placeholder} autoComplete={f.type === 'password' ? 'new-password' : 'off'} />
             )}
             {f.hint && <span className="mute" style={{ fontSize: 12 }}>{f.hint}</span>}
