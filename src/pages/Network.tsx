@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api, get } from '../lib/api';
+import { api, get, genCode } from '../lib/api';
 import { useUniField } from '../lib/hooks';
 import { DIR_FA, type RouteStation, type RouteT, type Station } from '../lib/types';
 import { Err, Modal, Table, Tag } from '../components/ui';
@@ -53,7 +53,7 @@ function Routes() {
   const status = useMutation({ mutationFn: (r: RouteT) => api('PATCH', `/routes/${r.id}/status`, { query: { is_active: !r.is_active } }), onSuccess: refresh });
   const fields: Field[] = [
     ...(uni.isSuper && edit === 'new' ? [{ name: 'university_id', label: 'دانشگاه', type: 'select' as const, options: uni.options, required: true }] : []),
-    { name: 'name', label: 'نام مسیر', required: true }, { name: 'code', label: 'کد یکتا (انگلیسی)', required: true, ltr: true },
+    { name: 'name', label: 'نام مسیر', required: true },
     { name: 'direction', label: 'جهت', type: 'select', options: Object.entries(DIR_FA).map(([value, label]) => ({ value, label })), required: true },
     { name: 'description', label: 'توضیحات' }, { name: 'is_active', label: 'فعال', type: 'checkbox' },
   ];
@@ -61,14 +61,14 @@ function Routes() {
     <div className="top" style={{ marginBottom: 8 }}><span className="mute">{q.data?.length ?? 0} مسیر</span><button className="btn" onClick={() => setEdit('new')}>مسیر جدید</button></div>
     <Err e={q.error ?? status.error} />
     <Table rows={q.data ?? []} cols={[
-      { head: 'نام', cell: (r) => r.name }, { head: 'کد', cell: (r) => <span dir="ltr">{r.code}</span> }, { head: 'جهت', cell: (r) => DIR_FA[r.direction] ?? r.direction },
+      { head: 'نام', cell: (r) => r.name }, { head: 'جهت', cell: (r) => DIR_FA[r.direction] ?? r.direction },
       { head: 'وضعیت', cell: (r) => <Tag on={r.is_active} /> },
       { head: '', cell: (r) => <div className="row"><button className="btn ghost" onClick={() => setStops(r)}>ایستگاه‌های مسیر</button><button className="btn ghost" onClick={() => setEdit(r)}>ویرایش</button>
         <button className="btn ghost" onClick={() => { if (confirm(r.is_active ? 'مسیر غیرفعال شود؟' : 'مسیر فعال شود؟')) status.mutate(r); }}>{r.is_active ? 'غیرفعال‌سازی' : 'فعال‌سازی'}</button></div> }]} />
     {edit && <FormModal title={edit === 'new' ? 'مسیر جدید' : 'ویرایش مسیر'} fields={fields} onClose={() => setEdit(null)}
       initial={edit === 'new' ? { is_active: true, university_id: uni.myUni, direction: 'outbound' } : { ...edit }}
       onSubmit={async (v) => {
-        const body = { ...v, university_id: edit === 'new' ? (v.university_id ?? uni.myUni) : edit.university_id };
+        const body = { ...v, university_id: edit === 'new' ? (v.university_id ?? uni.myUni) : edit.university_id, code: edit === 'new' ? genCode('RT') : edit.code };
         await api(edit === 'new' ? 'POST' : 'PATCH', edit === 'new' ? '/routes/' : `/routes/${edit.id}`, { json: body }); refresh();
       }} />}
     {stops && <StopsModal route={stops} onClose={() => setStops(null)} />}

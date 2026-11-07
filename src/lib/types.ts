@@ -15,7 +15,7 @@ export const TRIP_STATUS_FA: Record<string, string> = {
   scheduled: 'برنامه‌ریزی‌شده', boarding: 'در حال سوار شدن', in_progress: 'در حال انجام', completed: 'انجام‌شده', cancelled: 'لغوشده',
 };
 export interface Rate { id: number; contract_id: number; vehicle_type: string; price_per_trip: number; }
-export interface CostLine { vehicle_type: string | null; trips: number; price_per_trip: number | null; amount: number | null; }
+export interface CostLine { service_id?: number; service_name?: string; vehicle_type: string | null; trips: number; price_per_trip: number | null; amount: number | null; }
 export interface CostItem { contract_id: number; contract_number: string; university_id: number; transport_company_id: number; trips: number; priced_trips: number; unpriced_trips: number; total_cost: number; lines: CostLine[]; }
 export interface CostReport { summary: { trips: number; priced_trips: number; unpriced_trips: number; total_cost: number }; items: CostItem[]; }
 export const VTYPE_FA: Record<string, string> = { bus: 'اتوبوس', minibus: 'مینی‌بوس', van: 'ون', sedan: 'سواری' };
@@ -24,7 +24,7 @@ export interface Station { id: number; university_id: number; name: string; addr
 export interface RouteT { id: number; university_id: number; name: string; code: string; direction: string; description: string | null; is_active: boolean; }
 export interface RouteStation { id: number; route_id: number; station_id: number; stop_order: number; estimated_minutes_from_start: number | null; stop_duration_seconds: number | null; }
 export interface ServiceT { id: number; university_id: number; route_id: number; contract_id: number | null; name: string; code: string; service_type: string; gender_restriction: string; is_active: boolean; }
-export interface Schedule { id: number; university_id: number; service_id: number; day_of_week: number; departure_time: string; arrival_time: string | null; schedule_type: string; is_active: boolean; }
+export interface Schedule { id: number; university_id: number; service_id: number; day_of_week: number; departure_time: string; arrival_time: string | null; schedule_type: string; is_active: boolean; default_driver_id: number | null; default_vehicle_id: number | null; }
 // ۰ = شنبه … ۶ = جمعه (مطابق بک‌اند)
 export const DAYS_FA = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'];
 export const DIR_FA: Record<string, string> = { outbound: 'رفت (به دانشگاه)', inbound: 'برگشت (از دانشگاه)' };

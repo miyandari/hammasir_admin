@@ -81,3 +81,6 @@ export async function upload<T>(path: string, file: File, query?: Query): Promis
 export const get = <T,>(p: string, query?: Query) => api<T>('GET', p, { query });
 export const post = <T,>(p: string, json?: unknown, query?: Query) => api<T>('POST', p, { json, query });
 export const patch = <T,>(p: string, json?: unknown) => api<T>('PATCH', p, { json });
+
+/** کد یکتای خودکار برای مسیر/سرویس (کاربر نیازی به دیدن یا وارد کردن آن ندارد) */
+export const genCode = (prefix: string) => `${prefix}-${Date.now().toString(36).toUpperCase()}${Math.random().toString(36).slice(2, 5).toUpperCase()}`;
