@@ -6,11 +6,11 @@ import { useDrivers, useUniField } from '../lib/hooks';
 import { TRIP_STATUS_FA, type AnalyticsReport, type ServiceT, type Trip, type TripSummary, type Vehicle } from '../lib/types';
 import { Err, Table } from '../components/ui';
 import JalaliDate, { isoToJalali, jalaliToIso, showJalali, todayIso } from '../components/JalaliDate';
-
+import { hmTehran } from '../lib/time';
 const n = (x: number | null | undefined) => (x == null ? '—' : x.toLocaleString('fa-IR'));
 const firstOfMonth = () => { const j = isoToJalali(todayIso())!; return jalaliToIso(j.jy, j.jm, 1); };
 const tone = (s: string) => (s === 'completed' ? 'ok' : s === 'cancelled' ? 'bad' : s === 'scheduled' ? '' : 'warn');
-const hhmm = (iso: string | null) => (iso ? new Date(iso).toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' }) : '—');
+const hhmm = hmTehran;
 const ACTIVE = ['in_progress', 'boarding'];
 
 /** گزارش مدیریتی سفرها: انجام‌شده، در حال انجام، لغوشده، به تفکیک سرویس و فهرست کامل، با خروجی CSV */

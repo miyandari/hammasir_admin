@@ -3,7 +3,7 @@ export const BRAND_NAME = 'هم‌مسیر';
 export const BRAND_SLOGAN = 'همراه شما، از خوابگاه تا دانشگاه';
 
 /** نسخه‌ی پنل (هنگام انتشار با package.json هماهنگ شود) */
-export const APP_VERSION = '0.15.5';
+export const APP_VERSION = '0.16.0';
 
 /**
  * متن «درباره ما» و راه‌های «ارتباط با ما».

@@ -61,3 +61,9 @@ location /tiles/ { alias /var/www/hammasir_tiles/; add_header Cache-Control "pub
 - اجرای شبانه (روی سرور بک‌اند، پوشه‌ی پروژه): `python -m app.jobs.generate_trips --days 3`
   - cron نمونه: `10 0 * * * cd /path/to/student-transport && /path/to/venv/bin/python -m app.jobs.generate_trips --days 3 >> /var/log/hammasir_trips.log 2>&1`
   - اجرای مکرر امن است (سفر تکراری ساخته نمی‌شود).
+
+## v0.16
+- صفحه‌های «رزروها و سوار شدن»، «بازخورد دانشجویان» و «گزارش فعالیت‌ها».
+- ساعت سفرها با منطقه‌ی زمانی تهران نمایش داده می‌شود (API زمان را UTC برمی‌گرداند).
+- در موبایل (زیر ۷۰۰ پیکسل) هر ردیف جدول به یک کارت تبدیل می‌شود.
+- پروکسی Nginx/Vite باید `/feedbacks`, `/reservations`, `/boarding-requests`, `/audit-logs` را هم عبور دهد (در محیط تولید معمولاً کل `/api/` عبور می‌کند).

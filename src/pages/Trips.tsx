@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { hmTehran } from '../lib/time';
 import { api, get } from '../lib/api';
 import { useDrivers, useUniField } from '../lib/hooks';
 import { TRIP_STATUS_FA, type Driver, type ServiceT, type Trip, type Vehicle } from '../lib/types';
@@ -7,7 +8,7 @@ import { Acts, Err, Modal, Table } from '../components/ui';
 import FormModal from '../components/FormModal';
 import JalaliDate, { todayIso } from '../components/JalaliDate';
 
-const hm = (s: string | null) => (s ? new Date(s).toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' }) : '—');
+const hm = hmTehran;
 
 export default function Trips() {
   const uni = useUniField(); const qc = useQueryClient();

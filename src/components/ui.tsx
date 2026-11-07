@@ -39,9 +39,9 @@ export function Table<T>({ rows, cols, empty = 'موردی یافت نشد' }: {
   const shown = rows.slice(from, from + PAGE);
   return (
     <>
-      <div className="card tw" style={{ padding: 0 }}>
+      <div className="card tw rt" style={{ padding: 0 }}>
         <table><thead><tr>{cols.map((c) => <th key={c.head}>{c.head}</th>)}</tr></thead>
-          <tbody>{shown.map((r, i) => <tr key={from + i}>{cols.map((c) => <td key={c.head}>{c.cell(r)}</td>)}</tr>)}</tbody></table>
+          <tbody>{shown.map((r, i) => <tr key={from + i}>{cols.map((c) => <td key={c.head} data-label={c.head}>{c.cell(r)}</td>)}</tr>)}</tbody></table>
       </div>
       {pages > 1 && (
         <div className="row pager">

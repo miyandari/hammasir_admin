@@ -9,6 +9,9 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Universities from './pages/Universities';
 import Students from './pages/Students';
+import Feedbacks from './pages/Feedbacks';
+import Reservations from './pages/Reservations';
+import Audit from './pages/Audit';
 import Trips from './pages/Trips';
 import Network from './pages/Network';
 import LiveMap from './pages/LiveMap';
@@ -40,6 +43,9 @@ const ITEMS: Item[] = [
   { to: '/network', icon: 'route', label: 'مسیرها و ایستگاه‌ها', roles: ['super_admin', 'university_admin', 'transport_manager'], el: <Network /> },
   { to: '/services', icon: 'calendar', label: 'سرویس‌ها', roles: ALL, el: <Services /> },
   { to: '/trips', icon: 'flag', label: 'سفرها', roles: ALL, el: <Trips /> },
+  { to: '/reservations', icon: 'students', label: 'رزروها و سوار شدن', roles: UNI, el: <Reservations /> },
+  { to: '/feedbacks', icon: 'info', label: 'بازخورد دانشجویان', roles: ALL, el: <Feedbacks /> },
+  { to: '/audit', icon: 'shield', label: 'گزارش فعالیت‌ها', roles: ALL, el: <Audit /> },
 ];
 
 export default function App() {

@@ -153,3 +153,18 @@ tbody tr:last-child td{border-bottom:0}
 .menu .btn,.menu button{display:block;width:100%;text-align:start;background:transparent;color:var(--ink);border:0;border-radius:6px;padding:8px 10px;font:inherit;font-size:13px;cursor:pointer;white-space:nowrap}
 .menu .btn:hover,.menu button:hover{background:var(--bg)}
 .tw [dir=ltr]{white-space:nowrap;display:inline-block}
+
+/* موبایل: هر ردیف جدول به یک کارت تبدیل می‌شود (بدون اسکرول افقی) */
+@media(max-width:700px){
+  .rt{background:transparent;border:0;overflow:visible}
+  .rt table,.rt tbody,.rt tr,.rt td{display:block;width:100%}
+  .rt thead{display:none}
+  .rt tr{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:10px;padding:6px 12px}
+  .rt td{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px dashed var(--line);padding:7px 0;white-space:normal;text-align:end}
+  .rt td:last-child{border-bottom:0;position:static;width:100%;min-width:0;justify-content:flex-end}
+  .rt td::before{content:attr(data-label);color:var(--mute);font-size:12px;flex:none;text-align:start}
+  .rt td:last-child::before,.rt td[data-label=""]::before{content:none}
+  .rt td:empty{display:none}
+}
+@media(max-width:700px){.rt td{overflow-wrap:anywhere;min-width:0}.rt td>*{min-width:0;max-width:100%}.rt [dir=ltr]{white-space:normal}}
+@media(max-width:700px){.tw.rt td,.tw.rt td:nth-last-child(2){white-space:normal}}
