@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, get } from '../lib/api';
 import { useDrivers, useUniField } from '../lib/hooks';
 import { TRIP_STATUS_FA, type Driver, type ServiceT, type Trip, type Vehicle } from '../lib/types';
-import { Err, Modal, Table } from '../components/ui';
+import { Acts, Err, Modal, Table } from '../components/ui';
 import FormModal from '../components/FormModal';
 import JalaliDate, { todayIso } from '../components/JalaliDate';
 
@@ -45,8 +45,8 @@ export default function Trips() {
       { head: 'خودرو', cell: (r) => (r.vehicle_id ? <span dir="ltr">{vn.get(r.vehicle_id) ?? r.vehicle_id}</span> : <span className="tag warn">تعیین نشده</span>) },
       { head: 'حرکت واقعی', cell: (r) => hm(r.actual_departure_time) }, { head: 'پایان', cell: (r) => hm(r.actual_arrival_time) },
       { head: 'وضعیت', cell: (r) => <span className={`tag ${tone(r.status)}`}>{TRIP_STATUS_FA[r.status] ?? r.status}</span> },
-      { head: '', cell: (r) => r.status === 'scheduled' ? <div className="row"><button className="btn ghost" onClick={() => setAssign(r)}>تعیین راننده و خودرو</button>
-        <button className="btn ghost" onClick={() => { if (confirm('این سفر لغو شود؟')) cancel.mutate(r); }}>لغو</button></div> : null }]} />
+      { head: '', cell: (r) => r.status === 'scheduled' ? <Acts><button className="btn ghost" onClick={() => setAssign(r)}>تعیین راننده و خودرو</button>
+        <button className="btn ghost" onClick={() => { if (confirm('این سفر لغو شود؟')) cancel.mutate(r); }}>لغو</button></Acts> : null }]} />
     {assign && <AssignModal trip={assign} service={services.data?.find((s) => s.id === assign.service_id)} drivers={drivers.data ?? []} vehicles={vehicles.data ?? []} onClose={() => setAssign(null)} onDone={refresh} />}
   </>);
 }

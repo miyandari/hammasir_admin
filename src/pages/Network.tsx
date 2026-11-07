@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, get, genCode } from '../lib/api';
 import { useUniField } from '../lib/hooks';
 import { DIR_FA, type RouteStation, type RouteT, type Station } from '../lib/types';
-import { Err, Modal, Table, Tag } from '../components/ui';
+import { Acts, Err, Modal, Table, Tag } from '../components/ui';
 import FormModal, { latin, type Field } from '../components/FormModal';
 
 export default function Network() {
@@ -33,7 +33,7 @@ function Stations() {
     <Table rows={q.data ?? []} cols={[
       { head: 'نام', cell: (r) => r.name }, { head: 'نشانی', cell: (r) => r.address ?? '—' },
       { head: 'مختصات', cell: (r) => (r.latitude != null && r.longitude != null ? <span dir="ltr">{r.latitude.toFixed(5)}, {r.longitude.toFixed(5)}</span> : <span className="tag warn">ندارد</span>) },
-      { head: 'وضعیت', cell: (r) => <Tag on={r.is_active} /> }, { head: '', cell: (r) => <button className="btn ghost" onClick={() => setEdit(r)}>ویرایش</button> }]} />
+      { head: 'وضعیت', cell: (r) => <Tag on={r.is_active} /> }, { head: '', cell: (r) => <Acts><button className="btn ghost" onClick={() => setEdit(r)}>ویرایش</button></Acts> }]} />
     <p className="mute">بدون مختصات، ایستگاه روی نقشه و در «ایستگاه نزدیک» اپ دانشجو دیده نمی‌شود.</p>
     {edit && <FormModal title={edit === 'new' ? 'ایستگاه جدید' : 'ویرایش ایستگاه'} fields={fields} mapOthers={(q.data ?? []).filter((s) => s.latitude != null && s.longitude != null && (edit === 'new' || s.id !== edit.id)).map((s) => ({ name: s.name, lat: s.latitude!, lng: s.longitude! }))} onClose={() => setEdit(null)}
       initial={edit === 'new' ? { is_active: true, university_id: uni.myUni } : { ...edit }}
@@ -63,8 +63,8 @@ function Routes() {
     <Table rows={q.data ?? []} cols={[
       { head: 'نام', cell: (r) => r.name }, { head: 'جهت', cell: (r) => DIR_FA[r.direction] ?? r.direction },
       { head: 'وضعیت', cell: (r) => <Tag on={r.is_active} /> },
-      { head: '', cell: (r) => <div className="row"><button className="btn ghost" onClick={() => setStops(r)}>ایستگاه‌های مسیر</button><button className="btn ghost" onClick={() => setEdit(r)}>ویرایش</button>
-        <button className="btn ghost" onClick={() => { if (confirm(r.is_active ? 'مسیر غیرفعال شود؟' : 'مسیر فعال شود؟')) status.mutate(r); }}>{r.is_active ? 'غیرفعال‌سازی' : 'فعال‌سازی'}</button></div> }]} />
+      { head: '', cell: (r) => <Acts><button className="btn ghost" onClick={() => setStops(r)}>ایستگاه‌های مسیر</button><button className="btn ghost" onClick={() => setEdit(r)}>ویرایش</button>
+        <button className="btn ghost" onClick={() => { if (confirm(r.is_active ? 'مسیر غیرفعال شود؟' : 'مسیر فعال شود؟')) status.mutate(r); }}>{r.is_active ? 'غیرفعال‌سازی' : 'فعال‌سازی'}</button></Acts> }]} />
     {edit && <FormModal title={edit === 'new' ? 'مسیر جدید' : 'ویرایش مسیر'} fields={fields} onClose={() => setEdit(null)}
       initial={edit === 'new' ? { is_active: true, university_id: uni.myUni, direction: 'outbound' } : { ...edit }}
       onSubmit={async (v) => {
@@ -96,7 +96,7 @@ function StopsModal({ route, onClose }: { route: RouteT; onClose: () => void }) 
       <Table rows={rows} empty="هنوز ایستگاهی به این مسیر اضافه نشده." cols={[
         { head: 'ترتیب', cell: (r) => r.stop_order }, { head: 'ایستگاه', cell: (r) => sName.get(r.station_id) ?? r.station_id },
         { head: 'دقیقه از مبدأ', cell: (r) => r.estimated_minutes_from_start ?? '—' }, { head: 'توقف (ثانیه)', cell: (r) => r.stop_duration_seconds ?? '—' },
-        { head: '', cell: (r) => <button className="btn ghost" onClick={() => { if (confirm('این ایستگاه از مسیر حذف شود؟')) del.mutate(r.id); }}>حذف</button> }]} />
+        { head: '', cell: (r) => <Acts><button className="btn ghost" onClick={() => { if (confirm('این ایستگاه از مسیر حذف شود؟')) del.mutate(r.id); }}>حذف</button></Acts> }]} />
       <div style={{ marginTop: 16 }}>
         <label>ایستگاه<select value={sid} onChange={(e) => setSid(e.target.value)}><option value="">— انتخاب —</option>
           {(stations.data ?? []).filter((s) => s.is_active && s.university_id === route.university_id && !used.has(s.id)).map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}</select></label>

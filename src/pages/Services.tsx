@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, get, genCode } from '../lib/api';
 import { useDrivers, useUniField } from '../lib/hooks';
 import { DAYS_FA, GENDER_FA, STYPE_FA, type Contract, type Driver, type Vehicle, type RouteT, type Schedule, type ServiceT } from '../lib/types';
-import { Err, Modal, Table, Tag } from '../components/ui';
+import { Acts, Err, Modal, Table, Tag } from '../components/ui';
 import FormModal, { type Field } from '../components/FormModal';
 
 const hm = (s: string | null) => (s ? s.slice(0, 5) : '—');
@@ -38,8 +38,8 @@ export default function Services() {
       { head: 'قرارداد', cell: (r) => (r.contract_id == null ? <span className="tag warn">ندارد</span> : <span dir="ltr">{cName(r.contract_id)}</span>) },
       { head: 'نوع', cell: (r) => STYPE_FA[r.service_type] ?? r.service_type }, { head: 'جنسیت', cell: (r) => GENDER_FA[r.gender_restriction] ?? r.gender_restriction },
       { head: 'وضعیت', cell: (r) => <Tag on={r.is_active} /> },
-      { head: '', cell: (r) => <div className="row"><button className="btn ghost" onClick={() => setSched(r)}>برنامه‌ی هفتگی</button><button className="btn ghost" onClick={() => setEdit(r)}>ویرایش</button>
-        <button className="btn ghost" onClick={() => { if (confirm(r.is_active ? 'سرویس غیرفعال شود؟' : 'سرویس فعال شود؟')) status.mutate(r); }}>{r.is_active ? 'غیرفعال‌سازی' : 'فعال‌سازی'}</button></div> }]} />
+      { head: '', cell: (r) => <Acts><button className="btn ghost" onClick={() => setSched(r)}>برنامه‌ی هفتگی</button><button className="btn ghost" onClick={() => setEdit(r)}>ویرایش</button>
+        <button className="btn ghost" onClick={() => { if (confirm(r.is_active ? 'سرویس غیرفعال شود؟' : 'سرویس فعال شود؟')) status.mutate(r); }}>{r.is_active ? 'غیرفعال‌سازی' : 'فعال‌سازی'}</button></Acts> }]} />
     {edit && <FormModal title={edit === 'new' ? 'سرویس جدید' : 'ویرایش سرویس'} fields={fields} onClose={() => setEdit(null)}
       initial={edit === 'new' ? { is_active: true, university_id: uni.myUni, service_type: 'regular', gender_restriction: 'mixed' } : { ...edit }}
       onSubmit={async (v) => {
@@ -102,7 +102,7 @@ function ScheduleModal({ service, onClose }: { service: ServiceT; onClose: () =>
       <Table rows={rows} empty="هنوز زمان‌بندی ندارد." cols={[
         { head: 'روز', cell: (s) => DAYS_FA[s.day_of_week] }, { head: 'حرکت', cell: (s) => hm(s.departure_time) }, { head: 'رسیدن', cell: (s) => hm(s.arrival_time) },
         { head: 'راننده‌ی پیش‌فرض', cell: (s) => dName(s.default_driver_id) }, { head: 'خودرو', cell: (s) => <span dir="ltr">{vName(s.default_vehicle_id)}</span> },
-        { head: 'وضعیت', cell: (s) => <Tag on={s.is_active} /> }, { head: '', cell: (s) => <button className="btn ghost" onClick={() => toggle.mutate(s)}>{s.is_active ? 'غیرفعال' : 'فعال'}</button> }]} />
+        { head: 'وضعیت', cell: (s) => <Tag on={s.is_active} /> }, { head: '', cell: (s) => <Acts><button className="btn ghost" onClick={() => toggle.mutate(s)}>{s.is_active ? 'غیرفعال' : 'فعال'}</button></Acts> }]} />
       <div style={{ marginTop: 16 }}>
         <h3 style={{ fontSize: 14 }}>راننده و خودروی پیش‌فرض</h3>
         {cid == null ? <div className="err">برای انتخاب راننده و خودرو، ابتدا قرارداد را به سرویس وصل کنید.</div> : (<>

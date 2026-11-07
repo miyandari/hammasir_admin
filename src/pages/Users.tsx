@@ -4,7 +4,7 @@ import { api, get } from '../lib/api';
 import { useAuth } from '../lib/auth';
 import { useCompanies, useDrivers, useUniField, useUniversities } from '../lib/hooks';
 import { ROLE_FA, type Me, type Role } from '../lib/types';
-import { Err, Modal, Table, Tag } from '../components/ui';
+import { Acts, Err, Modal, Table, Tag } from '../components/ui';
 import FormModal, { type Field } from '../components/FormModal';
 
 type U = Me & { phone: string | null; is_active: boolean; driver_id: number | null; student_id: number | null };
@@ -51,9 +51,9 @@ export default function Users() {
       { head: 'نام کاربری', cell: (r) => <span dir="ltr">{r.username}</span> }, { head: 'نام', cell: (r) => [r.first_name, r.last_name].filter(Boolean).join(' ') || '—' },
       { head: 'نقش', cell: (r) => ROLE_FA[r.role] ?? r.role }, { head: 'دانشگاه / شرکت', cell: (r) => (r.transport_company_id ? cName(r.transport_company_id) : uniName(r.university_id)) },
       { head: 'وضعیت', cell: (r) => <Tag on={r.is_active} /> },
-      { head: '', cell: (r) => r.id === me?.id ? <span className="mute">شما</span> : <div className="row">
+      { head: '', cell: (r) => r.id === me?.id ? <span className="mute">شما</span> : <Acts>
         <button className="btn ghost" onClick={() => setPwUser(r)}>رمز جدید</button>
-        <button className="btn ghost" onClick={() => { if (confirm(r.is_active ? 'کاربر غیرفعال شود؟' : 'کاربر فعال شود؟')) status.mutate(r); }}>{r.is_active ? 'غیرفعال‌سازی' : 'فعال‌سازی'}</button></div> }]} />
+        <button className="btn ghost" onClick={() => { if (confirm(r.is_active ? 'کاربر غیرفعال شود؟' : 'کاربر فعال شود؟')) status.mutate(r); }}>{r.is_active ? 'غیرفعال‌سازی' : 'فعال‌سازی'}</button></Acts> }]} />
     <p className="mute" style={{ marginTop: 12 }}>حساب دانشجویان از «بارگذاری گروهی» در صفحه‌ی دانشجویان ساخته می‌شود.{!isSuper && ' تعریف کاربر شرکت فقط با مدیر ارشد سامانه است.'}</p>
     {creating && <RoleStep roles={creatable} onClose={() => setCreating(false)} detail={detail}
       submit={async (r, v) => { await api('POST', '/users/', { json: { ...v, role: r, university_id: r === 'company_admin' || r === 'super_admin' ? null : (v.university_id ?? uni.myUni), transport_company_id: r === 'company_admin' ? v.transport_company_id : null } }); refresh(); }} />}

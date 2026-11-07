@@ -136,3 +136,20 @@ tbody tr:last-child td{border-bottom:0}
 .tw td:last-child{white-space:normal;width:1%}
 .tw td:last-child .row{gap:4px;flex-wrap:wrap;justify-content:flex-start;max-width:200px}
 .tw td:last-child .btn{padding:4px 9px;font-size:12.5px;white-space:nowrap}
+/* جدول‌ها در عرض صفحه جا شوند: سلول‌ها بشکنند، ستون عملیات همیشه دیده شود */
+.tw td{white-space:normal;word-break:break-word}
+.tw th{white-space:nowrap}
+.tw td:last-child,.tw th:last-child{position:sticky;inset-inline-end:0;background:var(--card, var(--bg))}
+.tw td:last-child{width:auto;min-width:150px}
+.tw td{word-break:normal;overflow-wrap:normal}
+.tw .tag{white-space:nowrap}
+.tw td:nth-last-child(2){white-space:nowrap}
+
+/* منوی عملیات ردیف */
+.kebab{padding:3px 8px;line-height:1}
+.tw td:last-child{min-width:0;width:1%}
+.menu-back{position:fixed;inset:0;z-index:50}
+.menu{position:fixed;z-index:51;min-width:170px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:4px;box-shadow:0 8px 24px rgba(0,0,0,.14);display:flex;flex-direction:column;gap:2px}
+.menu .btn,.menu button{display:block;width:100%;text-align:start;background:transparent;color:var(--ink);border:0;border-radius:6px;padding:8px 10px;font:inherit;font-size:13px;cursor:pointer;white-space:nowrap}
+.menu .btn:hover,.menu button:hover{background:var(--bg)}
+.tw [dir=ltr]{white-space:nowrap;display:inline-block}

@@ -5,7 +5,7 @@ import { useAuth } from '../lib/auth';
 import { useCompanies, useDrivers, useUniField } from '../lib/hooks';
 import type { Company, Driver, Vehicle } from '../lib/types';
 import { VTYPE_FA } from '../lib/types';
-import { Err, Table, Tag } from '../components/ui';
+import { Acts, Err, Table, Tag } from '../components/ui';
 import FormModal, { type Field } from '../components/FormModal';
 
 const VT_OPTS = Object.entries(VTYPE_FA).map(([value, label]) => ({ value, label }));
@@ -37,7 +37,7 @@ export function Companies() {
     <Table rows={q.data ?? []} cols={[
       { head: 'نام', cell: (r) => r.name }, { head: 'شماره ثبت', cell: (r) => r.registration_number ?? '—' },
       { head: 'تلفن', cell: (r) => <span dir="ltr">{r.phone ?? '—'}</span> }, { head: 'وضعیت', cell: (r) => <Tag on={r.is_active} /> },
-      ...(canWrite ? [{ head: '', cell: (r: Company) => <div className="row"><button className="btn ghost" onClick={() => setEdit(r)}>ویرایش</button><StatusBtn on={r.is_active} run={() => status.mutate(r)} /></div> }] : [])]} />
+      ...(canWrite ? [{ head: '', cell: (r: Company) => <Acts><button className="btn ghost" onClick={() => setEdit(r)}>ویرایش</button><StatusBtn on={r.is_active} run={() => status.mutate(r)} /></Acts> }] : [])]} />
     {edit && <FormModal title={edit === 'new' ? 'شرکت جدید' : 'ویرایش شرکت'} fields={fields} onClose={() => setEdit(null)}
       initial={edit === 'new' ? { is_active: true } : { ...edit }}
       onSubmit={async (v) => { await api(edit === 'new' ? 'POST' : 'PATCH', edit === 'new' ? '/transport-companies/' : `/transport-companies/${edit.id}`, { json: v }); refresh(); }} />}
@@ -69,7 +69,7 @@ export function Vehicles() {
     <Table rows={q.data ?? []} cols={[
       { head: 'پلاک', cell: (r) => <span dir="ltr">{r.plate_number}</span> }, { head: 'نوع', cell: (r) => VTYPE_FA[r.vehicle_type] ?? r.vehicle_type },
       { head: 'ظرفیت', cell: (r) => r.capacity }, { head: 'راننده', cell: (r) => dName(r.driver_id) }, { head: 'وضعیت', cell: (r) => <Tag on={r.is_active} /> },
-      { head: '', cell: (r) => <div className="row"><button className="btn ghost" onClick={() => setEdit(r)}>ویرایش</button>{!isCompany && <StatusBtn on={r.is_active} run={() => status.mutate(r)} />}</div> }]} />
+      { head: '', cell: (r) => <Acts><button className="btn ghost" onClick={() => setEdit(r)}>ویرایش</button>{!isCompany && <StatusBtn on={r.is_active} run={() => status.mutate(r)} />}</Acts> }]} />
     {edit && <FormModal title={edit === 'new' ? 'خودروی جدید' : 'ویرایش خودرو'} fields={fields} onClose={() => setEdit(null)}
       initial={edit === 'new' ? { is_active: true, university_id: uni.myUni } : { ...edit }}
       onSubmit={async (v) => {
@@ -104,7 +104,7 @@ export function Drivers() {
     <Table rows={q.data ?? []} cols={[
       { head: 'نام', cell: (r) => `${r.first_name} ${r.last_name}` }, { head: 'تلفن', cell: (r) => <span dir="ltr">{r.phone}</span> },
       { head: 'شرکت', cell: (r) => cName(r.transport_company_id) }, { head: 'گواهینامه', cell: (r) => r.license_number ?? '—' }, { head: 'وضعیت', cell: (r) => <Tag on={r.is_active} /> },
-      { head: '', cell: (r) => <div className="row"><button className="btn ghost" onClick={() => setEdit(r)}>ویرایش</button>{!isCompany && <StatusBtn on={r.is_active} run={() => status.mutate(r)} />}</div> }]} />
+      { head: '', cell: (r) => <Acts><button className="btn ghost" onClick={() => setEdit(r)}>ویرایش</button>{!isCompany && <StatusBtn on={r.is_active} run={() => status.mutate(r)} />}</Acts> }]} />
     {edit && <FormModal title={edit === 'new' ? 'راننده‌ی جدید' : 'ویرایش راننده'} fields={fields} onClose={() => setEdit(null)}
       initial={edit === 'new' ? { is_active: true, university_id: uni.myUni } : { ...edit }}
       onSubmit={async (v) => {

@@ -1,4 +1,6 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
+import Icon from './Icon';
 
 const PAGE = 100;
 const n = (x: number) => x.toLocaleString('fa-IR');
@@ -55,4 +57,29 @@ export function Table<T>({ rows, cols, empty = 'موردی یافت نشد' }: {
       )}
     </>
   );
+}
+
+/** منوی عملیات ردیف (⋯): دکمه‌ها داخل یک منوی کوچک جمع می‌شوند تا ردیف‌ها کوتاه و جدول جمع‌وجور بماند */
+export function Acts({ children }: { children: ReactNode }) {
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+  const btn = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!pos) return;
+    const close = () => setPos(null);
+    window.addEventListener('scroll', close, true); window.addEventListener('resize', close);
+    return () => { window.removeEventListener('scroll', close, true); window.removeEventListener('resize', close); };
+  }, [pos]);
+  function toggle() {
+    if (pos) return setPos(null);
+    const r = btn.current!.getBoundingClientRect();
+    const w = 190;
+    setPos({ top: Math.min(r.bottom + 4, window.innerHeight - 200), left: Math.max(8, Math.min(r.left, window.innerWidth - w - 8)) });
+  }
+  return (<>
+    <button ref={btn} className="btn ghost kebab" aria-label="عملیات" title="عملیات" onClick={toggle}><Icon name="dots" /></button>
+    {pos && createPortal(<>
+      <div className="menu-back" onClick={() => setPos(null)} />
+      <div className="menu" style={{ top: pos.top, left: pos.left }} onClick={() => setPos(null)}>{children}</div>
+    </>, document.body)}
+  </>);
 }

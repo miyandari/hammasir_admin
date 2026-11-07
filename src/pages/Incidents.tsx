@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, get } from '../lib/api';
 import { useDrivers } from '../lib/hooks';
 import { incidentLabel, type Incident, type ServiceT, type Trip, type Vehicle } from '../lib/types';
-import { Err, Table } from '../components/ui';
+import { Acts, Err, Table } from '../components/ui';
 import FormModal from '../components/FormModal';
 
 const dt = (s: string | null) => (s ? new Date(s.endsWith('Z') || /[+-]\d\d:\d\d$/.test(s) ? s : s + 'Z').toLocaleString('fa-IR', { dateStyle: 'short', timeStyle: 'short' }) : '—');
@@ -34,8 +34,8 @@ export default function Incidents() {
       { head: 'خودرو / راننده', cell: (r) => { const t = tripOf.get(r.trip_id); return t ? <>{t.vehicle_id ? <span dir="ltr">{plate.get(t.vehicle_id)}</span> : '—'} · {t.driver_id ? dName.get(t.driver_id) : '—'}</> : '—'; } },
       { head: 'توضیح راننده', cell: (r) => r.description ?? '—' },
       { head: 'وضعیت', cell: (r) => (r.is_resolved ? <span className="tag ok">رفع شد {dt(r.resolved_at)}</span> : <span className="tag bad">باز</span>) },
-      { head: '', cell: (r) => r.is_resolved ? null : <div className="row"><button className="btn ghost" onClick={() => setRep(r)}>جایگزین</button>
-        <button className="btn ghost" onClick={() => { if (confirm('این مورد رفع‌شده ثبت شود؟')) resolve.mutate(r); }}>رفع شد</button></div> }]} />
+      { head: '', cell: (r) => r.is_resolved ? null : <Acts><button className="btn ghost" onClick={() => setRep(r)}>جایگزین</button>
+        <button className="btn ghost" onClick={() => { if (confirm('این مورد رفع‌شده ثبت شود؟')) resolve.mutate(r); }}>رفع شد</button></Acts> }]} />
     {rep && (() => { const t = tripOf.get(rep.trip_id); const uid = t?.university_id;
       return <FormModal title="تعیین راننده یا خودروی جایگزین" onClose={() => setRep(null)} submitLabel="ثبت جایگزین" initial={{}}
         fields={[

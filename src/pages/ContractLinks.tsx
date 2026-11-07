@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, get } from '../lib/api';
 import { useDrivers } from '../lib/hooks';
 import { VTYPE_FA, type Contract, type Vehicle } from '../lib/types';
-import { Err, Modal, Table, Tag } from '../components/ui';
+import { Acts, Err, Modal, Table, Tag } from '../components/ui';
 
 interface Link { id: number; contract_id: number; vehicle_id?: number; driver_id?: number; start_date: string | null; end_date: string | null; is_active: boolean; }
 
@@ -60,7 +60,7 @@ function Vehicles({ contract, canEdit }: { contract: Contract; canEdit: boolean 
       { head: 'پلاک', cell: (l) => <span dir="ltr">{vById.get(l.vehicle_id!)?.plate_number ?? l.vehicle_id}</span> },
       { head: 'نوع', cell: (l) => { const t = vById.get(l.vehicle_id!)?.vehicle_type; return t ? VTYPE_FA[t] ?? t : '—'; } },
       { head: 'وضعیت', cell: (l) => <Tag on={l.is_active} yes="مجاز" no="غیرمجاز" /> },
-      ...(canEdit ? [{ head: '', cell: (l: Link) => <button className="btn ghost" disabled={toggle.isPending} onClick={() => toggle.mutate(l)}>{l.is_active ? 'لغو اجازه' : 'فعال‌سازی'}</button> }] : [])]} />
+      ...(canEdit ? [{ head: '', cell: (l: Link) => <Acts><button className="btn ghost" disabled={toggle.isPending} onClick={() => toggle.mutate(l)}>{l.is_active ? 'لغو اجازه' : 'فعال‌سازی'}</button></Acts> }] : [])]} />
     {canEdit && <Picker busy={add.isPending} onAdd={(id) => add.mutate(id)} empty="خودروی فعال و قابل‌اتصالی نیست."
       options={eligible.map((v) => ({ value: v.id, label: `${v.plate_number} — ${VTYPE_FA[v.vehicle_type] ?? v.vehicle_type}` }))} />}
     {canEdit && !!noDriver && <p className="mute" style={{ fontSize: 12 }}>{noDriver} خودرو چون «راننده‌ی اصلی» ندارند در فهرست نیستند. شرکتِ خودرو از روی راننده‌ی اصلی‌اش تعیین می‌شود.</p>}
@@ -78,7 +78,7 @@ function Drivers({ contract, canEdit }: { contract: Contract; canEdit: boolean }
     <Table rows={links.data ?? []} empty="هنوز راننده‌ای به این قرارداد وصل نشده." cols={[
       { head: 'راننده', cell: (l) => { const d = dById.get(l.driver_id!); return d ? `${d.first_name} ${d.last_name}` : l.driver_id; } },
       { head: 'وضعیت', cell: (l) => <Tag on={l.is_active} yes="مجاز" no="غیرمجاز" /> },
-      ...(canEdit ? [{ head: '', cell: (l: Link) => <button className="btn ghost" disabled={toggle.isPending} onClick={() => toggle.mutate(l)}>{l.is_active ? 'لغو اجازه' : 'فعال‌سازی'}</button> }] : [])]} />
+      ...(canEdit ? [{ head: '', cell: (l: Link) => <Acts><button className="btn ghost" disabled={toggle.isPending} onClick={() => toggle.mutate(l)}>{l.is_active ? 'لغو اجازه' : 'فعال‌سازی'}</button></Acts> }] : [])]} />
     {canEdit && <Picker busy={add.isPending} onAdd={(id) => add.mutate(id)} empty="راننده‌ی فعال و قابل‌اتصالی نیست (راننده باید از شرکت و دانشگاه همین قرارداد باشد)."
       options={eligible.map((d) => ({ value: d.id, label: `${d.first_name} ${d.last_name}` }))} />}
   </>);
