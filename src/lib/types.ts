@@ -6,7 +6,7 @@ export interface Company { id: number; name: string; registration_number: string
 export interface Contract { id: number; university_id: number; transport_company_id: number; contract_number: string; start_date: string; end_date: string; contract_amount: number | null; description: string | null; is_active: boolean; }
 export interface Vehicle { id: number; university_id: number; driver_id: number | null; plate_number: string; vehicle_type: string; capacity: number; is_active: boolean; }
 export interface Driver { id: number; university_id: number; transport_company_id: number | null; first_name: string; last_name: string; national_id: string | null; phone: string; license_number: string | null; is_active: boolean; }
-export interface Trip { id: number; university_id: number; service_id: number; driver_id: number | null; vehicle_id: number | null; trip_date: string; planned_departure_time: string; actual_departure_time: string | null; actual_arrival_time: string | null; status: string; is_active: boolean; }
+export interface Trip { seated_capacity?: number | null; id: number; university_id: number; service_id: number; driver_id: number | null; vehicle_id: number | null; trip_date: string; planned_departure_time: string; actual_departure_time: string | null; actual_arrival_time: string | null; status: string; is_active: boolean; }
 export const ROLE_FA: Record<Role, string> = {
   super_admin: 'مدیر ارشد سامانه', university_admin: 'مدیر دانشگاه', transport_manager: 'مسئول حمل‌ونقل',
   company_admin: 'کاربر شرکت حمل‌ونقل', driver: 'راننده', student: 'دانشجو',

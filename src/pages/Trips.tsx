@@ -19,6 +19,7 @@ export default function Trips() {
   const drivers = useDrivers();
   const vehicles = useQuery({ queryKey: ['/vehicles/'], queryFn: () => get<Vehicle[]>('/vehicles/') });
   const [assign, setAssign] = useState<Trip | null>(null);
+  const [delay, setDelay] = useState<Trip | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const refresh = () => void qc.invalidateQueries({ queryKey: ['trips'] });
   const gen = useMutation({
@@ -44,10 +45,16 @@ export default function Trips() {
       { head: 'سرویس', cell: (r) => sv.get(r.service_id) ?? r.service_id }, { head: 'برنامه', cell: (r) => hm(r.planned_departure_time) },
       { head: 'راننده', cell: (r) => (r.driver_id ? dn.get(r.driver_id) ?? r.driver_id : <span className="tag warn">تعیین نشده</span>) },
       { head: 'خودرو', cell: (r) => (r.vehicle_id ? <span dir="ltr">{vn.get(r.vehicle_id) ?? r.vehicle_id}</span> : <span className="tag warn">تعیین نشده</span>) },
+      { head: 'ظرفیت', cell: (r) => (r.seated_capacity ? r.seated_capacity.toLocaleString('fa-IR') : <span className="tag warn" title="بدون ظرفیت؛ دانشجو فقط با تأیید راننده در ایستگاه سوار می‌شود">نامشخص</span>) },
       { head: 'حرکت واقعی', cell: (r) => hm(r.actual_departure_time) }, { head: 'پایان', cell: (r) => hm(r.actual_arrival_time) },
       { head: 'وضعیت', cell: (r) => <span className={`tag ${tone(r.status)}`}>{TRIP_STATUS_FA[r.status] ?? r.status}</span> },
       { head: '', cell: (r) => r.status === 'scheduled' ? <Acts><button className="btn ghost" onClick={() => setAssign(r)}>تعیین راننده و خودرو</button>
-        <button className="btn ghost" onClick={() => { if (confirm('این سفر لغو شود؟')) cancel.mutate(r); }}>لغو</button></Acts> : null }]} />
+        <button className="btn ghost" onClick={() => setDelay(r)}>اعلام تأخیر</button>
+        <button className="btn ghost" onClick={() => { if (confirm('این سفر لغو شود؟ رزروها لغو و به دانشجویان اعلان می‌شود.')) cancel.mutate(r); }}>لغو</button></Acts>
+        : r.status === 'boarding' || r.status === 'in_progress' ? <Acts><button className="btn ghost" onClick={() => setDelay(r)}>اعلام تأخیر</button></Acts> : null }]} />
+    {delay && <FormModal title="اعلام تأخیر سفر" onClose={() => setDelay(null)} submitLabel="ارسال به دانشجویان رزروکننده" initial={{ minutes: 10, reason: '' }}
+      fields={[{ name: 'minutes', label: 'چند دقیقه تأخیر؟', type: 'number', required: true }, { name: 'reason', label: 'دلیل (اختیاری)', type: 'text' }]}
+      onSubmit={async (v) => { const r = await api<{ notified_students: number }>('POST', `/trips/${delay.id}/delay`, { json: { minutes: Number(v.minutes), reason: v.reason || null } }); setMsg(`تأخیر ثبت شد و ${r.notified_students.toLocaleString('fa-IR')} دانشجو مطلع شدند.`); }} />}
     {assign && <AssignModal trip={assign} service={services.data?.find((s) => s.id === assign.service_id)} drivers={drivers.data ?? []} vehicles={vehicles.data ?? []} onClose={() => setAssign(null)} onDone={refresh} />}
   </>);
 }
